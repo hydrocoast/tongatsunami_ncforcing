@@ -115,7 +115,7 @@ contains
 
         use data_storm_module, only: set_data_storm => set_storm
         use data_storm_module, only: set_HWRF_fields
-        use data_storm_module, only: set_wrf_storm_fields
+        use data_storm_module, only: set_storm_fields
 
         use utility_module, only: get_value_count
 
@@ -234,9 +234,9 @@ contains
                     case(1) ! HWRF Data
                         set_data_fields => set_HWRF_fields
                     case(-1) ! WRF Data
-                        set_data_fields => set_wrf_storm_fields
+                        set_data_fields => set_storm_fields
                     case(-2) ! WRF Data (NetCDF input)
-                        set_data_fields => set_wrf_storm_fields
+                        set_data_fields => set_storm_fields
                 end select
                 call set_data_storm(storm_file_path,data_storm,         &
                                     storm_specification_type, log_unit )

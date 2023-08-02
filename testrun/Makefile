@@ -83,8 +83,8 @@ EXCLUDE_SOURCES = \
 RIEMANN = $(CLAW)/riemann/src
 
 MODULES = \
-  ./mod/data_storm_module_wrfclaw.f90 \
-  ./mod/storm_module_wrfclaw.f90 \
+  ./mod/data_storm_module.f90 \
+  ./mod/storm_module.f90 \
   $(GEOLIB)/gauges_module.f90 \
   $(GEOLIB)/multilayer/multilayer_module.f90 \
 

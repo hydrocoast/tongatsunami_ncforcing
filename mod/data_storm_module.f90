@@ -11,7 +11,7 @@
 !                     http://www.opensource.org/licenses/
 ! ------------------------------------------------------------------------------
 ! 2020/01/31, v1, NF added what are written in wrf_storm_module.f90
-!                 --> storm_location, set_wrf_storm_fields etc.
+!                 --> storm_location, set_storm_fields etc.
 ! 2022/01/27, v2, NF added ncfile read
 ! 2022/08/05, v3, NF added ncfile read in sequence (need buffer layer)
 ! ==============================================================================
@@ -102,7 +102,6 @@ contains
 
     use geoclaw_module, only: coordinate_system, ambient_pressure
     use amr_module, only: t0
-    ! use storm_module, only: flag_input_wrf
 
         implicit none
 
@@ -114,10 +113,6 @@ contains
         ! Local storage
         integer, parameter :: l_file = 701
         integer :: i, j, iostatus
-
-        ! Flag of 1) ASCII input or 2) netCDF input
-        ! integer :: flag_input_wrf
-        !character(len=4096) :: storm_data_path
 
         ! Pointer for reading nc files (only netCDF input)
         ! integer :: ifile_nc 
@@ -164,7 +159,7 @@ contains
             print *, "storm data format =====> *.nc"
 
             ! Read data list of storm files in netCDF
-            storm_data_path = trim(storm%data_path) // "storm_list.data"
+            storm_data_path = trim(storm%data_path) // "/storm_list.data"
 
             print *,'Reading storm list data file ',trim(storm_data_path)
             open(unit=l_file,file=storm_data_path,status='old', &
@@ -191,7 +186,7 @@ contains
             ! Read file lists
             do ifile_nc = 1,nfile_nc
                 read(l_file,'(100a)') ncfilelist(ifile_nc)
-                if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
+                !if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
             enddo
 
 
@@ -207,7 +202,7 @@ contains
 
             ! Read in the first storm data snapshot as 'next'
             ! and increment storm%lalst_storm_index to 1
-            call read_wrf_storm_nc( storm, t0 )
+            call read_storm_nc( storm, t0 )
 
             ! Check if starting time of simulation
             !  is before the first storm data snapshot
@@ -223,7 +218,7 @@ contains
                 ! Read in the second storm data snapshot as 'next',
                 !  update 'prev' with old 'next' data,
                 !  and increment storm%last_storm_index to 2
-                call read_wrf_storm_nc( storm, t0  )
+                call read_storm_nc( storm, t0  )
             endif
 
         endif
@@ -288,13 +283,13 @@ contains
     end function date_to_seconds
 
     ! ==========================================================================
-    !  read_wrf_storm_data_file()
+    !  read_storm_data_file()
     !    Opens storm data file and reads next storm entry
     !    Currently only for ASCII file
     !  This file will probably need to be modified
     !   to suit the input dataset format.
     ! ==========================================================================
-    subroutine read_wrf_storm_file(data_path,storm_array,num_lats,last_storm_index,timestamp)
+    subroutine read_storm_file(data_path,storm_array,num_lats,last_storm_index,timestamp)
 
         implicit none
 
@@ -360,15 +355,15 @@ contains
         timestamp = date_to_seconds(yy,mm,dd,hh,nn)
         close(data_file) 
 
-    end subroutine read_wrf_storm_file
+    end subroutine read_storm_file
 
     ! ==========================================================================
-    ! read_wrf_storm_nc()
+    ! read_storm_nc()
     ! Reads storm fields for next time snapshot
     ! NetCDF format only
     ! ==========================================================================
 
-    subroutine read_wrf_storm_nc( storm, t )
+    subroutine read_storm_nc( storm, t )
 
         use geoclaw_module, only: ambient_pressure, earth_radius, deg2rad
         use netcdf
@@ -482,7 +477,7 @@ contains
 
         endif
 
-        ! ----- contents of subroutine read_wrf_storm()----------------------------------------------
+        ! ----- contents of subroutine read_storm()----------------------------------------------
         ! Overwrite older storm states with newer storm states
         storm%t_prev = storm%t_next
         storm%u_prev = storm%u_next 
@@ -519,7 +514,7 @@ contains
         ! close nc file
         call check_ncstatus( nf90_close(ncid) )
 
-        ! ----- contents of subroutine read_wrf_storm_data
+        ! ----- contents of subroutine read_storm_data
         !
         
         ! make u10 v10 P filled with U10, V10 = 0 and P = 1013
@@ -603,7 +598,7 @@ contains
             ifile_nc = ifile_nc + 1
         endif
 
-    end subroutine read_wrf_storm_nc
+    end subroutine read_storm_nc
 
     subroutine check_ncstatus( status )
         use netcdf
@@ -933,9 +928,9 @@ contains
     end subroutine set_HWRF_fields
 
     ! ==========================================================================
-    !  set_wrf_storm_fields() added
+    !  set_storm_fields() added
     ! ==========================================================================
-    subroutine set_wrf_storm_fields(maux, mbc, mx, my, xlower, ylower,    &
+    subroutine set_storm_fields(maux, mbc, mx, my, xlower, ylower,    &
         dx, dy, t, aux, wind_index,           &
         pressure_index, storm)
 
@@ -945,9 +940,6 @@ contains
         use geoclaw_module, only: spherical_distance
 
         use geoclaw_module, only: rad2deg  
-
-        ! use storm_module, only: flag_input_wrf
-
 
         implicit none
 
@@ -983,16 +975,7 @@ contains
         if (DEBUG) print *,"loading new storm snapshot ",&
                         "t=",t,"old t_next=",storm%t_next
 
-        ! For debug only
-        ! print *, "flag = ",storm%storm_specification_type!flag_input_wrf
-        ! print *, "it = ",it, " ifile_nc = ",ifile_nc
-        ! print *, "yymmddhhnn = ", yy ,mm, dd, hh, nn
-        !if (storm%storm_specification_type==-1)then
-        !    call read_wrf_storm(storm,t)
-        !elseif (storm%storm_specification_type==-2)then
-        !    call read_wrf_storm_nc( storm, t )
-        !endif
-        call read_wrf_storm_nc( storm, t )
+        call read_storm_nc( storm, t )
 
         if (DEBUG) print *,"new t_next=",storm%t_next
         ! If storm data ends, the final storm state is used.
@@ -1054,7 +1037,7 @@ contains
         endif
         enddo
 
-    end subroutine set_wrf_storm_fields
+    end subroutine set_storm_fields
 
     ! ==========================================================================
     !  integer pure get_lat_index(lat)

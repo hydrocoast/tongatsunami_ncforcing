@@ -49,4 +49,5 @@ xgeoclaw
 .output
 .plots
 __pycache__/
+jaguar
 !fig/**
