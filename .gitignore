@@ -9,6 +9,7 @@
 *.html
 *.data
 *.storm
+*.ipynb
 *.jld2
 *.mat
 *.nc
@@ -47,4 +48,5 @@ result_gauge/
 xgeoclaw
 .output
 .plots
+__pycache__/
 !fig/**

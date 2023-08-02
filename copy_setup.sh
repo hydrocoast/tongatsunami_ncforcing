@@ -1,6 +1,7 @@
 #!/bin/bash
-if [ -z "$2" ]; then
+if [ "$#" -lt 2 ]; then
     echo "invalid number of the argument"
+    echo "usage: $0 [sim directory ORG] [sim directory NEW] "
     exit 0
 fi
 
