@@ -30,7 +30,7 @@ module data_storm_module
     real(kind=8), parameter :: eps = 1.0e-8 
 
     ! List of storm files (only netCDF input)
-    character(len=1024),allocatable :: ncfilelist(:)
+    character(len=1024), allocatable :: ncfilelist(:)
 
     ! Pointer for reading nc files (only netCDF input)
     integer :: ifile_nc 
@@ -144,11 +144,11 @@ contains
         ! The datafiles for lat & lon contain nx*ny values
         ! The datafiles for u, v, p contain nx*ny*nt values
 
-        ! Open SuWAT configuration file
+        !!!!
         if (present(storm_data_path)) then
             storm%data_path = storm_data_path
         else
-            storm%data_path = './'
+            storm%data_path = '.'
         endif
 
         storm%storm_specification_type = storm_spec_type
@@ -162,8 +162,7 @@ contains
             storm_data_path = trim(storm%data_path) // "/storm_list.data"
 
             print *,'Reading storm list data file ',trim(storm_data_path)
-            open(unit=l_file,file=storm_data_path,status='old', &
-                    action='read',iostat=iostatus)
+            open(unit=l_file, file=storm_data_path, status='old', action='read', iostat=iostatus)
             if (iostatus /= 0) then
                 print *, "Error opening storm list data file. status = ", iostatus
                 stop 
@@ -193,10 +192,11 @@ contains
             ! Initialize loop counter
             it = 1
             ifile_nc = 1
-            ! Initialize date (start from 0000/00/01 01:00)
+            ! Initialize date (start from 0000/00/01 00:00)
+            ! Initialize date (start from 0000/00/00 00:00)
             yy = 0
             mm = 0
-            dd = 1
+            dd = 0
             hh = 0
             nn = 0
 
@@ -387,7 +387,7 @@ contains
         character(len=1024) :: f_in
         real(kind=4), allocatable :: lon(:), lat(:), timelap(:)
         real(kind=4), allocatable :: psea(:,:,:)
-        real(kind=4), allocatable :: u10(:,:,:), v10(:,:,:)
+        !real(kind=4), allocatable :: u10(:,:,:), v10(:,:,:)
         ! parameters for read
         integer :: ncid, varid, dimid
         integer :: start_nc(3), count_nc(3)
@@ -418,8 +418,10 @@ contains
 
         ! netcdf filename  
         f_in = ncfilelist(ifile_nc)
+        print *, 'reading start: ' // trim(f_in)
         call check_ncstatus( nf90_open( trim( f_in ), nf90_nowrite, ncid) )
-                        
+        print *, 'checkpoint 1'
+                       
 
         ! number of array
         ! -- lon
@@ -433,14 +435,16 @@ contains
         allocate(lat(ny))
         call check_ncstatus( nf90_get_var(ncid, dimid, lat) )
         ! -- timelap
-        call check_ncstatus( nf90_inq_dimid(ncid, 'time', dimid) )
-        call check_ncstatus( nf90_inquire_dimension(ncid, dimid, len=nt) )
-        allocate(timelap(nt))
-        call check_ncstatus( nf90_get_var(ncid, dimid, timelap) )
+        !call check_ncstatus( nf90_inq_dimid(ncid, 'time', dimid) )
+        !call check_ncstatus( nf90_inquire_dimension(ncid, dimid, len=nt) )
+        !allocate(timelap(nt))
+        !call check_ncstatus( nf90_get_var(ncid, dimid, timelap) )
+        nt = 1
+        print *, 'read lonlat info completed'
 
         ! allocate
         allocate(psea(nx,ny,nt))
-        allocate(u10(nx,ny,nt), v10(nx,ny,nt))
+        !allocate(u10(nx,ny,nt), v10(nx,ny,nt))
         
         ! process done in first step
         if(it==1 .and. ifile_nc==1)then
@@ -494,23 +498,24 @@ contains
         count_nc = [nx,ny,nt]
 
         ! -- psea
-        call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
+        !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
+        call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
         call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
         call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
         call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
         psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
         ! -- u10
-        call check_ncstatus( nf90_inq_varid(ncid, "u", varid) )
-        call check_ncstatus( nf90_get_var(ncid, varid, u10, start=start_nc, count=count_nc) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
-        u10(:,:,:) = u10(:,:,:)*scale_factor + add_offset
+        !call check_ncstatus( nf90_inq_varid(ncid, "u", varid) )
+        !call check_ncstatus( nf90_get_var(ncid, varid, u10, start=start_nc, count=count_nc) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
+        !u10(:,:,:) = u10(:,:,:)*scale_factor + add_offset
         ! -- v10
-        call check_ncstatus( nf90_inq_varid(ncid, "v", varid) )
-        call check_ncstatus( nf90_get_var(ncid, varid, v10, start=start_nc, count=count_nc) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
-        v10(:,:,:) = v10(:,:,:)*scale_factor + add_offset
+        !call check_ncstatus( nf90_inq_varid(ncid, "v", varid) )
+        !call check_ncstatus( nf90_get_var(ncid, varid, v10, start=start_nc, count=count_nc) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
+        !v10(:,:,:) = v10(:,:,:)*scale_factor + add_offset
         ! close nc file
         call check_ncstatus( nf90_close(ncid) )
 
@@ -518,15 +523,15 @@ contains
         !
         
         ! make u10 v10 P filled with U10, V10 = 0 and P = 1013
-        call make_storm_buffer_layer(storm,psea(:,:,it),nx,ny,1,lon,lat)
-        call make_storm_buffer_layer(storm,u10(:,:,it),nx,ny,2,lon,lat)
-        call make_storm_buffer_layer(storm,v10(:,:,it),nx,ny,3,lon,lat)
+        !call make_storm_buffer_layer(storm,psea(:,:,it),nx,ny,1,lon,lat)
+        !call make_storm_buffer_layer(storm,u10(:,:,it),nx,ny,2,lon,lat)
+        !call make_storm_buffer_layer(storm,v10(:,:,it),nx,ny,3,lon,lat)
 
         ! Convert pressure units: mbar (hPa) to Pa
         ! storm%p_next = storm%p_next * 1.0e2 ! NC file uses Pa
         ! Estimate storm center location based on lowest pressure
         ! (only the array index is saved)
-        storm%eye_next = MINLOC(storm%p_next)
+        storm%eye_next = minloc(storm%p_next)
         ! If no obvious low pressure area, set storm center to 0 instead
         lowest_p = storm%p_next(storm%eye_next(1),storm%eye_next(2))
         if (lowest_p > ambient_pressure*0.99) then
@@ -536,23 +541,23 @@ contains
         ! (temporary)
         ! Calculate distance b/w two typhoons
         ! dist=rcos-(sin(y1)sin(y2)+cos(y1)cos(y2)cos(x2-x1))
-        if(storm%eye_prev(1)/=0 .or. storm%eye_prev(2)/=0)then
-            ! print *, storm%eye_prev
-            ! print *, storm%eye_next
-            a1 = sin(deg2rad*lat(storm%eye_prev(2)))&
-            &    *sin(deg2rad*lat(storm%eye_next(2)))
+        !if(storm%eye_prev(1)/=0 .or. storm%eye_prev(2)/=0)then
+        !    ! print *, storm%eye_prev
+        !    ! print *, storm%eye_next
+        !    a1 = sin(deg2rad*lat(storm%eye_prev(2)))&
+        !    &    *sin(deg2rad*lat(storm%eye_next(2)))
 
-            a2 = cos(deg2rad*lat(storm%eye_prev(2)))&
-            &    *cos(deg2rad*lat(storm%eye_next(2)))&
-            &    *cos(deg2rad*lon(storm%eye_next(1))&
-            &        -deg2rad*lon(storm%eye_prev(1)))
-            storm_dist = earth_radius * acos( a1 + a2 )
-            print *, "storm distance = ",storm_dist
-            if (storm_dist > storm_dist_threshold)then
-                print *, "another storm appeared ..."
-                storm%eye_next = [0,0]
-            endif
-        endif
+        !    a2 = cos(deg2rad*lat(storm%eye_prev(2)))&
+        !    &    *cos(deg2rad*lat(storm%eye_next(2)))&
+        !    &    *cos(deg2rad*lon(storm%eye_next(1))&
+        !    &        -deg2rad*lon(storm%eye_prev(1)))
+        !    storm_dist = earth_radius * acos( a1 + a2 )
+        !    print *, "storm distance = ",storm_dist
+        !    if (storm_dist > storm_dist_threshold)then
+        !        print *, "another storm appeared ..."
+        !        storm%eye_next = [0,0]
+        !    endif
+        !endif
 
         ! Update number of storm snapshots read in
         storm%last_storm_index = storm%last_storm_index + 1
@@ -568,7 +573,7 @@ contains
         write(*,*) "Time: ", dd, " [day]", hh, " [hour]", nn, " [min]"
         write(*,*) "nx: ",nx, "ny: ",ny, "nt: ", nt
         write(*,*) "dx and dy :",storm%dx, storm%dy
-        write(*,*) "tmin: ",timelap(lbound(timelap)), "tmax: ",timelap(ubound(timelap))
+        !write(*,*) "tmin: ",timelap(lbound(timelap)), "tmax: ",timelap(ubound(timelap))
         write(*,*) "xll: ",minval(lon), "xur: " ,maxval(lon)
         write(*,*) "yll: ",minval(lat), "yur: ",maxval(lat)
         write(*,*) "iteration: ",it, "storm%t_next: ",storm%t_next
@@ -585,9 +590,13 @@ contains
         ! renew loop counter
         it = it + 1
         ! renew time stamp
-        hh = hh + 1
+        nn = nn + 1
+        if(nn>=60)then
+            nn = nn - 60
+            hh = hh + 1
+        endif
         if(hh>=24)then
-            hh = 0
+            hh = hh - 24
             dd = dd + 1
         endif
 
