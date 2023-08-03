@@ -419,9 +419,7 @@ contains
         ! netcdf filename  
         f_in = ncfilelist(ifile_nc)
         print *, 'reading start: ' // trim(f_in)
-        call check_ncstatus( nf90_open( "../jaguar/slp_jaguar5_001.nc", nf90_nowrite, ncid) )
-        print *, 'checkpoint 1'
-                       
+        call check_ncstatus( nf90_open( f_in, nf90_nowrite, ncid) )
 
         ! number of array
         ! -- lon
