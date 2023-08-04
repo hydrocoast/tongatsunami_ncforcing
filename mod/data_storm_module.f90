@@ -192,13 +192,12 @@ contains
             ! Initialize loop counter
             it = 1
             ifile_nc = 1
-            ! Initialize date (start from 0000/00/01 00:00)
-            ! Initialize date (start from 0000/00/00 00:00)
+            ! Initialize date (start from 0000/00/01 00:01)
             yy = 0
             mm = 0
-            dd = 0
+            dd = 1
             hh = 0
-            nn = 0
+            nn = 1
 
             ! Read in the first storm data snapshot as 'next'
             ! and increment storm%lalst_storm_index to 1
@@ -438,7 +437,6 @@ contains
         !allocate(timelap(nt))
         !call check_ncstatus( nf90_get_var(ncid, dimid, timelap) )
         nt = 1
-        print *, 'read lonlat info completed'
 
         ! allocate
         allocate(psea(nx,ny,nt))
@@ -495,13 +493,16 @@ contains
         start_nc = [1,1,1]
         count_nc = [nx,ny,nt]
 
-        ! -- psea
-        !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
+        ! -- psl
         call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
         call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
-        call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
-        psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
+        psea(:,:,:) = psea(:,:,:) + ambient_pressure
+        ! -- psea
+        !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
+        !call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
+        !call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
+        !psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
         ! -- u10
         !call check_ncstatus( nf90_inq_varid(ncid, "u", varid) )
         !call check_ncstatus( nf90_get_var(ncid, varid, u10, start=start_nc, count=count_nc) )
@@ -529,12 +530,12 @@ contains
         ! storm%p_next = storm%p_next * 1.0e2 ! NC file uses Pa
         ! Estimate storm center location based on lowest pressure
         ! (only the array index is saved)
-        storm%eye_next = minloc(storm%p_next)
+        !storm%eye_next = minloc(storm%p_next)
         ! If no obvious low pressure area, set storm center to 0 instead
-        lowest_p = storm%p_next(storm%eye_next(1),storm%eye_next(2))
-        if (lowest_p > ambient_pressure*0.99) then
+        !lowest_p = storm%p_next(storm%eye_next(1),storm%eye_next(2))
+        !if (lowest_p > ambient_pressure*0.99) then
             storm%eye_next = [0,0]
-        endif 
+        !endif 
 
         ! (temporary)
         ! Calculate distance b/w two typhoons
@@ -581,8 +582,8 @@ contains
             write(*,*) "storm eye: N/A"
         endif
         write(*,*) "max P: ", maxval(storm%p_next), "min P: ", minval(storm%p_next)
-        write(*,*) "max U10: ",maxval(storm%u_next), "min U10: ",minval(storm%u_next)
-        write(*,*) "max V10: ", maxval(storm%v_next), "min V10: ",minval(storm%v_next)
+        !write(*,*) "max U10: ",maxval(storm%u_next), "min U10: ",minval(storm%u_next)
+        !write(*,*) "max V10: ", maxval(storm%v_next), "min V10: ",minval(storm%v_next)
         write(*,*) "------------------------------------------------------------------"
 
         ! renew loop counter
