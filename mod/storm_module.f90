@@ -240,7 +240,7 @@ contains
                 end select
                 call set_data_storm(storm_file_path,data_storm,         &
                                     storm_specification_type, log_unit )
-                print *, "Storm is set by WRF Output !!!"
+                !print *, "Storm is set by WRF Output !!!"
             else if (storm_specification_type < 0) then
                 print *, "Storm specification data type ",               &
                             storm_specification_type, "not available."

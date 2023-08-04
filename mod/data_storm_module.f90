@@ -496,7 +496,9 @@ contains
         ! -- psl
         call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
         call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        psea(:,:,:) = psea(:,:,:) + ambient_pressure
+        psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
+        write(*,'("ambient pressure:  ",f10.2)') ambient_pressure
+        write(*,'("min: ",f10.2,",  max: ",f10.2)') minval(psea(:,:,1)), maxval(psea(:,:,1))
         ! -- psea
         !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
         !call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
@@ -520,7 +522,11 @@ contains
 
         ! ----- contents of subroutine read_storm_data
         !
-        
+       
+
+        ! if NOT using the buffer layers
+        storm%p_next = psea(:,:,it)
+        ! 
         ! make u10 v10 P filled with U10, V10 = 0 and P = 1013
         !call make_storm_buffer_layer(storm,psea(:,:,it),nx,ny,1,lon,lat)
         !call make_storm_buffer_layer(storm,u10(:,:,it),nx,ny,2,lon,lat)
