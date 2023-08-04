@@ -11,6 +11,7 @@ nfgout = fgconfig(1);
 
 if ~isfolder('_mat'); mkdir('_mat'); end
 if ~isfolder('_plots'); mkdir('_plots'); end
+if ~isfolder('_grd'); mkdir('_grd'); end
 
 % for fgridnumber = 1:nfgout
 % fg = 1;
@@ -71,6 +72,9 @@ for fg = 1:nfgout
     caxis([0.0,0.2])
     colorbar;
     exportgraphics(gcf,sprintf('./_plots/fgout%02d_max.png',fg),"ContentType","image","Resolution",300);
+
+    %% gmt grdwrite
+    grdwrite2(x,y,full(etamax),sprintf('./_grd/fgout%02d_max.grd',fg))
 
     clear x y header nx ny
 end
