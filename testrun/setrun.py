@@ -167,7 +167,7 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 2:
         # Specify a list of output times.
-        clawdata.output_times = [i*3600.0 for i in range(0,13)] # every 30 min, 0 to 12 h
+        clawdata.output_times = [i*3600.0 for i in range(0,13)] # every 1 h, 0 to 12 h
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
@@ -181,8 +181,6 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.output_aux_components = 'all'
     clawdata.output_aux_onlyonce = False    # output aux arrays only at t0
 
-
-
     # ---------------------------------------------------
     # Verbosity of messages to screen during integration:
     # ---------------------------------------------------
@@ -191,8 +189,6 @@ def setrun(claw_pkg='geoclaw'):
     # at AMR levels <= verbosity.  Set verbosity = 0 for no printing.
     #   (E.g. verbosity == 2 means print only on levels 1 and 2.)
     clawdata.verbosity = 1
-
-
 
     # --------------
     # Time stepping:
@@ -460,9 +456,10 @@ def setrun(claw_pkg='geoclaw'):
     gauges.append([52402, 153.895, 11.930, 0., 1.e10]) #
     gauges.append([52404, 132.139, 20.629, 0., 1.e10]) #
 
+
     # Fixed grid output
     fgout_grids = rundata.fgout_data.fgout_grids  # empty list initially
-    ## fgout 1
+    ### fgout 1
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 1
     fgout.output_format = 'ascii'
@@ -474,10 +471,10 @@ def setrun(claw_pkg='geoclaw'):
     fgout.y2 = clawdata.upper[1]
     fgout.tstart = clawdata.t0
     fgout.tend = clawdata.tfinal
-    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 3 + 1
+    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 12 + 1
     fgout_grids.append(fgout)
 
-    ## fgout 2
+    ## Around Japan
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 2
     fgout.output_format = 'ascii'
@@ -489,7 +486,7 @@ def setrun(claw_pkg='geoclaw'):
     fgout.ny = int( (fgout.y2 - fgout.y1) * 30 )
     fgout.tstart = 3600.0*5.0
     fgout.tend = clawdata.tfinal
-    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 6 + 1
+    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 60 + 1
     fgout_grids.append(fgout)
 
     # ============================
@@ -497,27 +494,25 @@ def setrun(claw_pkg='geoclaw'):
     # ============================
     fgmax_files = rundata.fgmax_data.fgmax_files
 
-    # Points on a uniform 2d grid:
-    # Domain 1
-    fg = fgmax_tools.FGmaxGrid()
-    fg.point_style = 2  # uniform rectangular x-y grid
-    fg.dx = 1.0/5.0        # desired resolution of fgmax grid
-    fg.x1 = clawdata.lower[0]
-    fg.x2 = clawdata.upper[0]
-    fg.y1 = clawdata.lower[1]
-    fg.y2 = clawdata.upper[1]
-    fg.min_level_check = 1 # which levels to monitor max on
-    fg.arrival_tol = 1.0e-2
-    fg.tstart_max = clawdata.t0  # just before wave arrives
-    fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
-    fg.dt_check = 10.0     # how often to update max values
-    fg.interp_method = 0   # 0 ==> pw const in cells, recommended
-    rundata.fgmax_data.fgmax_grids.append(fg)  # written to fgmax_grids.data
+    ## Points on a uniform 2d grid:
+    ## Domain 1
+    #fg = fgmax_tools.FGmaxGrid()
+    #fg.point_style = 2  # uniform rectangular x-y grid
+    #fg.dx = 1.0/5.0        # desired resolution of fgmax grid
+    #fg.x1 = clawdata.lower[0]
+    #fg.x2 = clawdata.upper[0]
+    #fg.y1 = clawdata.lower[1]
+    #fg.y2 = clawdata.upper[1]
+    #fg.min_level_check = 1 # which levels to monitor max on
+    #fg.arrival_tol = 1.0e-2
+    #fg.tstart_max = clawdata.t0  # just before wave arrives
+    #fg.tend_max = clawdata.tfinal    # when to stop monitoring max values
+    #fg.dt_check = 10.0     # how often to update max values
+    #fg.interp_method = 0   # 0 ==> pw const in cells, recommended
+    #rundata.fgmax_data.fgmax_grids.append(fg)  # written to fgmax_grids.data
 
-    #if int(clawpack.__version__.split('.')[1]) < 9: # v5.8
-
-    # num_fgmax_val
-    rundata.fgmax_data.num_fgmax_val = 1  # 1 to save depth, 2 to save depth and speed, and 5 to Save depth, speed, momentum, momentum flux and hmin
+    ## num_fgmax_val
+    #rundata.fgmax_data.num_fgmax_val = 1  # 1 to save depth, 2 to save depth and speed, and 5 to Save depth, speed, momentum, momentum flux and hmin
 
     #------------------------------------------------------------------
     # GeoClaw specific parameters:
@@ -594,12 +589,6 @@ def setgeo(rundata):
     # force_dry.tend = 1e10
     # force_dry.fname = os.path.join(topodir, 'force_dry_init_05.dat')
     # rundata.qinit_data.force_dry_list.append(force_dry)
-
-    # == setfixedgrids.data values ==
-    rundata.fixed_grid_data.fixedgrids = []
-    # for fixed grids append lines of the form
-    # [t1,t2,noutput,x1,x2,y1,y2,xpoints,ypoints,\
-    #  ioutarrivaltimes,ioutsurfacemax]
 
     # ================
     #  Set Surge Data

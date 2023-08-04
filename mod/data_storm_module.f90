@@ -417,7 +417,7 @@ contains
 
         ! netcdf filename  
         f_in = ncfilelist(ifile_nc)
-        print *, 'reading start: ' // trim(f_in)
+        print *, 'reading ... ' // trim(f_in)
         call check_ncstatus( nf90_open( f_in, nf90_nowrite, ncid) )
 
         ! number of array
@@ -497,8 +497,6 @@ contains
         call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
         call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
         psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
-        write(*,'("ambient pressure:  ",f10.2)') ambient_pressure
-        write(*,'("min: ",f10.2,",  max: ",f10.2)') minval(psea(:,:,1)), maxval(psea(:,:,1))
         ! -- psea
         !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
         !call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
@@ -576,17 +574,17 @@ contains
         write(*,*) "------------------------------------------------------------------"
         write(*,*) "Storm information"
         write(*,*) "Time: ", dd, " [day]", hh, " [hour]", nn, " [min]"
-        write(*,*) "nx: ",nx, "ny: ",ny, "nt: ", nt
-        write(*,*) "dx and dy :",storm%dx, storm%dy
+        !write(*,*) "nx: ",nx, "ny: ",ny, "nt: ", nt
+        !write(*,*) "dx and dy :",storm%dx, storm%dy
         !write(*,*) "tmin: ",timelap(lbound(timelap)), "tmax: ",timelap(ubound(timelap))
-        write(*,*) "xll: ",minval(lon), "xur: " ,maxval(lon)
-        write(*,*) "yll: ",minval(lat), "yur: ",maxval(lat)
+        !write(*,*) "xll: ",minval(lon), "xur: " ,maxval(lon)
+        !write(*,*) "yll: ",minval(lat), "yur: ",maxval(lat)
         write(*,*) "iteration: ",it, "storm%t_next: ",storm%t_next
-        if(storm%eye_next(1)/=0 .and. storm%eye_next(2)/=0)then
-            write(*,*) "storm eye: ",lon(storm%eye_next(1)),lat(storm%eye_next(2))
-        else
-            write(*,*) "storm eye: N/A"
-        endif
+        !if(storm%eye_next(1)/=0 .and. storm%eye_next(2)/=0)then
+        !    write(*,*) "storm eye: ",lon(storm%eye_next(1)),lat(storm%eye_next(2))
+        !else
+        !    write(*,*) "storm eye: N/A"
+        !endif
         write(*,*) "max P: ", maxval(storm%p_next), "min P: ", minval(storm%p_next)
         !write(*,*) "max U10: ",maxval(storm%u_next), "min U10: ",minval(storm%u_next)
         !write(*,*) "max V10: ", maxval(storm%v_next), "min V10: ",minval(storm%v_next)
