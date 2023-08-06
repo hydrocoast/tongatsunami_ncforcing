@@ -108,10 +108,10 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 115.0    # west longitude
+    clawdata.lower[0] = 125.0    # west longitude
     clawdata.upper[0] = 200.0   # east longitude
     clawdata.lower[1] = -55.0    # south latitude
-    clawdata.upper[1] = 55.0   # north latitude
+    clawdata.upper[1] = 30.0   # north latitude
 
     # Number of grid cells
     degree_factor = 5
@@ -353,9 +353,9 @@ def setrun(claw_pkg='geoclaw'):
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
     regions.append([1, 1, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
-    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 120.0, 150.0, 10.0, 45.0])
+    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 125.0, 150.0, 10.0, 30.0])
     ## Level 4
-    regions.append([1, 4, 4.0*3600.0, clawdata.tfinal, 128.0, 138.0, 20.0, 30.0])
+    regions.append([1, 4, 4.0*3600.0, clawdata.tfinal, 128.0, 138.0, 20.0, 29.0])
     ## Level 5
     topo_file = topotools.Topography(os.path.join(topodir, topoflist['Amami']), topo_type=3)
     regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
@@ -432,17 +432,17 @@ def setrun(claw_pkg='geoclaw'):
     fgout.y2 = clawdata.upper[1]
     fgout.tstart = clawdata.t0
     fgout.tend = clawdata.tfinal
-    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 12 + 1
+    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 30 + 1
     fgout_grids.append(fgout)
 
     ## Around Japan
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 2
     fgout.output_format = 'ascii'
-    fgout.x1 = 120.0
+    fgout.x1 = 125.0
     fgout.x2 = 150.0
     fgout.y1 = 20.0
-    fgout.y2 = 45.0
+    fgout.y2 = 30.0
     fgout.nx = int( (fgout.x2 - fgout.x1) * 30 )
     fgout.ny = int( (fgout.y2 - fgout.y1) * 30 )
     fgout.tstart = 3600.0*5.0
