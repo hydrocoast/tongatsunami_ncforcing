@@ -1,1 +1,0 @@
-../sh_prepost/mkgrd_fgout_seq.sh

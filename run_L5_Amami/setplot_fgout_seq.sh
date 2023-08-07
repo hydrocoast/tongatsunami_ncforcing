@@ -1,1 +1,0 @@
-../sh_prepost/setplot_fgout_seq.sh
