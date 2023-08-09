@@ -99,7 +99,7 @@ SOURCES = \
 include $(CLAWMAKE)
 
 # Plot and save using Julia 
-.PHONY: juliaplots juliasave converttomat juliaall matlabplots msmget
+.PHONY: juliaplots juliasave converttomat juliaall gmtplot
 
 juliaplots:
 	julia setplot.jl
@@ -109,7 +109,7 @@ converttomat:
 	julia setconvert.jl
 juliaall:
 	julia -e 'include("./setsave.jl"); include("./setplot.jl"); include("./setconvert.jl")'
-matlabplots:
-	matlab -nodesktop -r 'run save_fgout.m; exit'
+gmtplot:
+	./sequential_mkgrd_fgout.sh; ./sequential_mkgrd_max.sh; ./sequential_plot_fgmax.sh
 
 ### DO NOT remove this line - make depends on it ###

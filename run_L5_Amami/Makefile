@@ -110,6 +110,6 @@ converttomat:
 juliaall:
 	julia -e 'include("./setsave.jl"); include("./setplot.jl"); include("./setconvert.jl")'
 gmtplot:
-	./sequential_mkgrd_fgout.sh; ./sequential_mkgrd_max.sh; ./sequential_mkgrd_max.sh
+	./sequential_mkgrd_fgout.sh; ./sequential_mkgrd_max.sh; ./sequential_plot_fgmax.sh
 
 ### DO NOT remove this line - make depends on it ###
