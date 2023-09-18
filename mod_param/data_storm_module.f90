@@ -427,13 +427,15 @@ contains
         call check_ncstatus( nf90_inquire_dimension(ncid, dimid, len=nx) ) ! nx is determined
         allocate(lon(nx))
         call check_ncstatus( nf90_get_var(ncid, dimid, lon) )
-        print *, lon(lbound(lon)), lon(ubound(lon))
+        !print *, lon(lbound(lon)), lon(ubound(lon))
+
         ! -- lat
         call check_ncstatus( nf90_inq_dimid(ncid, 'lat', dimid) )
         call check_ncstatus( nf90_inquire_dimension(ncid, dimid, len=ny) )
         allocate(lat(ny))
         call check_ncstatus( nf90_get_var(ncid, dimid, lat) )
-        print *, lat(lbound(lat)), lat(ubound(lat))
+        !print *, lat(lbound(lat)), lat(ubound(lat))
+
         ! -- timelap
         !call check_ncstatus( nf90_inq_dimid(ncid, 'time', dimid) )
         !call check_ncstatus( nf90_inquire_dimension(ncid, dimid, len=nt) )
