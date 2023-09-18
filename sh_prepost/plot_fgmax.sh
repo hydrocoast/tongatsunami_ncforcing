@@ -26,7 +26,7 @@ gmt begin $output png
     gmt makecpt -Croma -I -T0/15/1 -D
 
     gmt grdimage $grdfile -J$proj -R$grdfile -C
-    gmt coast -Wthinnest,gray50 -Dh -Glightgray -Baf
+    gmt coast -Wthinnest,gray50 -Df -Glightgray -Baf
     gmt colorbar -C -Bxa5 -By+lcm -DjTR+w2.5/0.3+o0.8/0.7+ef
 gmt end
 
