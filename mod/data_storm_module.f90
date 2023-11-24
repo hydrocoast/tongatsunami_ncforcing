@@ -38,7 +38,6 @@ module data_storm_module
 
     ! Counter variable
     integer :: it
-    integer :: yy, mm, dd, hh, nn
 
     ! WRF storm type definition
     ! Specified wind & pressure field 
@@ -126,7 +125,6 @@ contains
 
         ! Counter variable
         ! integer :: it
-        ! integer :: yy, mm, dd, hh, nn
 
 
         
@@ -183,18 +181,12 @@ contains
             ! Read file lists
             do ifile_nc = 1,nfile_nc
                 read(l_file,'(a)') ncfilelist(ifile_nc)
-                if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
+                !if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
             enddo
 
             ! Initialize loop counter
             it = 1
             ifile_nc = 1
-            ! Initialize date (start from 0000/00/01 00:01)
-            yy = 0
-            mm = 0
-            dd = 1
-            hh = 0
-            nn = 1
 
             ! Read in the first storm data snapshot as 'next'
             ! and increment storm%lalst_storm_index to 1
@@ -235,125 +227,6 @@ contains
     end subroutine set_storm
 
     ! ==========================================================================
-    !  real(kind=8) pure date_to_seconds(year,months,days,hours,minutes,seconds)
-    !    Convert time from year, month, day, hour, min, sec to seconds since the
-    !    beginning of the year.
-    ! ==========================================================================
-    !pure real(kind=8) function date_to_seconds(year,months,days,hours,minutes, &
-                                               !seconds) result(time)
-    pure integer function date_to_seconds(year,months,days,hours,minutes) result(time)
-      
-        implicit none
-
-        ! Input
-        integer, intent(in) :: year, months, days, hours, minutes
-
-        ! Local storage
-        integer :: total_days
-
-        ! Count number of days
-        total_days = days
-
-        ! Add days for months that have already passed
-        if (months > 1) total_days = total_days + 31
-        if (months > 2) then
-            if (int(year / 4) * 4 == year) then
-                total_days = total_days + 29
-            else
-                total_days = total_days + 28
-            endif
-        endif
-        if (months > 3)  total_days = total_days + 30
-        if (months > 4)  total_days = total_days + 31
-        if (months > 5)  total_days = total_days + 30
-        if (months > 6)  total_days = total_days + 31
-        if (months > 7)  total_days = total_days + 30
-        if (months > 8)  total_days = total_days + 31
-        if (months > 9)  total_days = total_days + 30
-        if (months > 10) total_days = total_days + 31
-        if (months > 11) total_days = total_days + 30
-
-        ! Convert everything to seconds since the beginning of the year
-        time = (total_days - 1) * 86400 + hours * 3600 + minutes * 60
-
-    end function date_to_seconds
-
-    ! ==========================================================================
-    !  read_storm_data_file()
-    !    Opens storm data file and reads next storm entry
-    !    Currently only for ASCII file
-    !  This file will probably need to be modified
-    !   to suit the input dataset format.
-    ! ==========================================================================
-    subroutine read_storm_file(data_path,storm_array,num_lats,last_storm_index,timestamp)
-
-        implicit none
-
-        ! Subroutine I/O
-        real(kind=8), intent(inout) :: storm_array(:,:)
-        character(len=*), intent(in) :: data_path
-        integer, intent(in) :: num_lats, last_storm_index
-        integer, intent(inout) :: timestamp
-
-        ! Local storage
-        integer :: j, k, iostatus
-        integer :: yy, mm, dd, hh, nn
-        integer, parameter :: data_file = 701
-
-        ! Open the input file
-        !
-        open(unit=data_file,file=data_path,status='old', &
-                action='read',iostat=iostatus)
-        if (iostatus /= 0) then
-            print *, "Error opening data file: ",trim(data_path)
-            print *, "Status = ", iostatus
-            stop 
-        endif            
-        ! Advance to the next time step to be read in
-        ! Skip entries based on total number previously read
-        do k = 1, last_storm_index
-            do j = 1, num_lats + 1
-                read(data_file, *, iostat=iostatus)
-                ! Exit loop if we ran into an error or we reached the end of the file
-                if (iostatus /= 0) then
-                    print *, "Unexpected end-of-file reading ",trim(data_path)
-                    print *, "Status = ", iostatus
-                    if (DEBUG) print *, "k, laststormindex = ", k, last_storm_index
-                    if (DEBUG) print *, "j, num_lats = ", j, num_lats
-                    timestamp = -1
-                    close(data_file) 
-                    return
-                endif
-            enddo
-        enddo
-        ! Read in next time snapshot 
-        ! example:
-        ! ____108000 7908251800 (EDIT from here)
-        read(data_file, 600, iostat=iostatus) & 
-            yy, mm, dd, hh, nn
-    600 FORMAT(11x,i2,i2,i2,i2,i2)
-        !read(data_file, (11x,i2,i2,i2,i2,i2), iostat=iostatus) & 
-            !yy, mm, dd, hh, nn
-        do j = 1, num_lats
-            read(data_file, *, iostat=iostatus) storm_array(:,j) 
-            ! Exit loop if we ran into an error or we reached the end of the file
-            if (iostatus /= 0) then
-                print *, "Unexpected end-of-file reading ",trim(data_path)
-                print *, "Status = ", iostatus
-                if (DEBUG) print *, "j, num_lats = ", j, num_lats
-                timestamp = -1
-                close(data_file) 
-                return
-            endif
-        enddo
-
-        ! Convert datetime to seconds
-        timestamp = date_to_seconds(yy,mm,dd,hh,nn)
-        close(data_file) 
-
-    end subroutine read_storm_file
-
-    ! ==========================================================================
     ! read_storm_nc()
     ! Reads storm fields for next time snapshot
     ! NetCDF format only
@@ -370,7 +243,6 @@ contains
         type(data_storm_type), intent(inout) :: storm
         real(kind=8) :: lowest_p
         real(kind=8), intent(in) :: t
-        ! integer, intent(inout) :: yy, mm, dd, hh, nn
         ! integer, intent(inout) :: it          ! time step
         ! integer, intent(inout) :: ifile_nc    ! file ID to be read
         ! character(len=1024), intent(in) :: ncfilelist(:)
@@ -505,20 +377,20 @@ contains
             stop "could not find the variable of pressure."
         endif
 
-        ! -- psl
-        !call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
-        !call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        !psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
-        ! -- psea
-        !call check_ncstatus( nf90_inq_varid(ncid, "slp", varid) )
-        call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        if (varname_p=="psl") then
-            psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
-        else
-            call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
-            call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
-            psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
+
+        ierr = nf90_get_att(ncid, varid, "scale_factor", scale_factor)
+        if(ierr /= nf90_noerr) then 
+            scale_factor = 1.0d0
         endif
+        ierr = nf90_get_att(ncid, varid, "add_offset", add_offset)
+        if(ierr /= nf90_noerr) then 
+            add_offset = 0.0d0
+        endif
+        call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
+        psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
+
+        ! convert unit (hPa -> Pa) and absolute air pressure
+        psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
 
         ! -- u10
         !call check_ncstatus( nf90_inq_varid(ncid, "u", varid) )
@@ -584,13 +456,12 @@ contains
         if (DEBUG) print *, "last_storm_index=", storm%last_storm_index
 
         ! timestamp
-        timestamp = date_to_seconds(yy,mm,dd,hh,nn)
-        storm%t_next = timestamp
+        storm%t_next = storm%t_next + 60.0d0
         
         ! --- print for check
         write(*,*) "------------------------------------------------------------------"
         write(*,*) "Storm information"
-        write(*,*) "Time: ", dd, " [day]", hh, " [hour]", nn, " [min]"
+        write(*,*) "Time: ", storm%t_next/60, " [min]"
         !write(*,*) "nx: ",nx, "ny: ",ny, "nt: ", nt
         !write(*,*) "dx and dy :",storm%dx, storm%dy
         !write(*,*) "tmin: ",timelap(lbound(timelap)), "tmax: ",timelap(ubound(timelap))
@@ -602,23 +473,13 @@ contains
         !else
         !    write(*,*) "storm eye: N/A"
         !endif
-        write(*,*) "max P: ", maxval(storm%p_next), "min P: ", minval(storm%p_next)
+        write(*,*) "max P [hPa]: ", maxval(storm%p_next)*1e-2, "min P [hPa]: ", minval(storm%p_next)*1e-2
         !write(*,*) "max U10: ",maxval(storm%u_next), "min U10: ",minval(storm%u_next)
         !write(*,*) "max V10: ", maxval(storm%v_next), "min V10: ",minval(storm%v_next)
         write(*,*) "------------------------------------------------------------------"
 
         ! renew loop counter
         it = it + 1
-        ! renew time stamp
-        nn = nn + 1
-        if(nn>=60)then
-            nn = nn - 60
-            hh = hh + 1
-        endif
-        if(hh>=24)then
-            hh = hh - 24
-            dd = dd + 1
-        endif
 
         ! reset loop counter
         if(it==nt+1)then
