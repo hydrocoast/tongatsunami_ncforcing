@@ -39,6 +39,9 @@ module data_storm_module
     ! Counter variable
     integer :: it
 
+    ! Time interval between files of the meteorological field
+    real(kind=8) :: dt_file
+
     ! WRF storm type definition
     ! Specified wind & pressure field 
     type data_storm_type
@@ -170,6 +173,7 @@ contains
             do i=1,5
                 read(l_file,*)
             enddo
+            read(l_file,*) dt_file
 
             ! Read number of files
             read(l_file,*) nfile_nc
@@ -456,7 +460,7 @@ contains
         if (DEBUG) print *, "last_storm_index=", storm%last_storm_index
 
         ! timestamp
-        storm%t_next = storm%t_next + 60.0d0
+        storm%t_next = storm%t_next + dt_file
         
         ! --- print for check
         write(*,*) "------------------------------------------------------------------"
