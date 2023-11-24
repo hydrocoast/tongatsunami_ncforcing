@@ -86,7 +86,7 @@ module data_storm_module
         integer :: last_storm_index
 
         ! Store the storm data file for repeated reading
-        character(len=4096) :: data_path
+        character(len=512) :: data_path
 
         ! Storm specification type
         integer :: storm_specification_type
@@ -114,15 +114,15 @@ contains
         integer, parameter :: l_file = 701
         integer :: i, j, iostatus
 
-        ! Pointer for reading nc files (only netCDF input)
-        ! integer :: ifile_nc 
-        ! integer :: nfile_nc ! number of nc files
+        !! Pointer for reading nc files (only netCDF input)
+        !integer :: ifile_nc 
+        !integer :: nfile_nc ! number of nc files
 
         real(kind=8) :: ll_lon, ll_lat, ur_lon, ur_lat, dx, dy
 
         ! Reading buffer variables
-        character(len=100) :: dummy_read
-        integer :: readsize
+        !character(len=100) :: dummy_read
+        !integer :: readsize
 
         ! Counter variable
         ! integer :: it
@@ -169,11 +169,9 @@ contains
             endif            
 
             ! Skip headers
-            read(l_file,*)
-            read(l_file,*)
-            read(l_file,*)
-            read(l_file,*)
-            read(l_file,*)
+            do i=1,5
+                read(l_file,*)
+            enddo
 
             ! Read number of files
             read(l_file,*) nfile_nc
@@ -184,10 +182,9 @@ contains
 
             ! Read file lists
             do ifile_nc = 1,nfile_nc
-                read(l_file,'(100a)') ncfilelist(ifile_nc)
-                !if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
+                read(l_file,'(a)') ncfilelist(ifile_nc)
+                if (DEBUG) print *, trim( ncfilelist(ifile_nc) )
             enddo
-
 
             ! Initialize loop counter
             it = 1
@@ -388,13 +385,14 @@ contains
         real(kind=4), allocatable :: psea(:,:,:)
         !real(kind=4), allocatable :: u10(:,:,:), v10(:,:,:)
         ! parameters for read
-        integer :: ncid, varid, dimid
+        integer :: ncid, varid, dimid, ierr
         integer :: start_nc(3), count_nc(3)
         real(kind=4) :: scale_factor, add_offset
         ! parameters for detecting storm eyes
         real(kind=8), parameter :: storm_dist_threshold = 1000.0e3 ! [m]
         real(kind=8) :: a1, a2, storm_dist
         
+        character(len=16) :: varname_p = "slp"
 
         ! check if ifile_nc exists
         if(ifile_nc>nfile_nc)then
@@ -493,16 +491,35 @@ contains
         start_nc = [1,1,1]
         count_nc = [nx,ny,nt]
 
+        ! find the variable of sea level pressure
+        ierr = nf90_inq_varid(ncid, varname_p, varid)
+        if(ierr /= nf90_noerr) then 
+            varname_p = "psl"
+            ierr = nf90_inq_varid(ncid, varname_p, varid)
+        endif
+        if(ierr /= nf90_noerr) then 
+            varname_p = "psea"
+            ierr = nf90_inq_varid(ncid, varname_p, varid)
+        endif
+        if(ierr /= nf90_noerr) then 
+            stop "could not find the variable of pressure."
+        endif
+
         ! -- psl
-        call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
-        call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
-        ! -- psea
-        !call check_ncstatus( nf90_inq_varid(ncid, "psea", varid) )
+        !call check_ncstatus( nf90_inq_varid(ncid, "psl", varid) )
         !call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
-        !call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
-        !call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
-        !psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
+        !psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
+        ! -- psea
+        !call check_ncstatus( nf90_inq_varid(ncid, "slp", varid) )
+        call check_ncstatus( nf90_get_var(ncid, varid, psea, start=start_nc, count=count_nc) )
+        if (varname_p=="psl") then
+            psea(:,:,:) = psea(:,:,:)*1e2 + ambient_pressure
+        else
+            call check_ncstatus( nf90_get_att(ncid, varid, "scale_factor", scale_factor) )
+            call check_ncstatus( nf90_get_att(ncid, varid, "add_offset", add_offset) )
+            psea(:,:,:) = psea(:,:,:)*scale_factor + add_offset
+        endif
+
         ! -- u10
         !call check_ncstatus( nf90_inq_varid(ncid, "u", varid) )
         !call check_ncstatus( nf90_get_var(ncid, varid, u10, start=start_nc, count=count_nc) )
