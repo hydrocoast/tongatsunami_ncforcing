@@ -158,7 +158,7 @@ def setrun(claw_pkg='geoclaw'):
     # The solution at initial time t0 is always written in addition.
 
     clawdata.output_style = 2
-    clawdata.tfinal = 3600.0*16.0
+    clawdata.tfinal = 3600.0*12.0
 
     if clawdata.output_style==1:
         # Output nout frames at equally spaced times up to tfinal:
@@ -167,7 +167,7 @@ def setrun(claw_pkg='geoclaw'):
 
     elif clawdata.output_style == 2:
         # Specify a list of output times.
-        clawdata.output_times = [i*3600.0 for i in range(0,17)] # every 1 h, 0 to 16 h
+        clawdata.output_times = [i*3600.0 for i in range(0,13)] # every 1 h, 0 to 12 h
 
     elif clawdata.output_style == 3:
         # Output every iout timesteps with a total of ntot time steps:
@@ -358,7 +358,7 @@ def setrun(claw_pkg='geoclaw'):
     regions.append([1, 4, 4.0*3600.0, clawdata.tfinal, 128.0, 138.0, 20.0, 29.0])
     ## Level 5
     topo_file = topotools.Topography(os.path.join(topodir, topoflist['Amami']), topo_type=3)
-    regions.append([1, 5, 5.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
+    regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
 
     # Target simulation domain
     gauges = rundata.gaugedata.gauges
@@ -408,10 +408,10 @@ def setrun(claw_pkg='geoclaw'):
     #for g in gauges:
     #     regions.append([4, 4, 5.0*3600.0, clawdata.tfinal, g[1]-0.15, g[1]+0.15, g[2]-0.15, g[2]+0.15])
     for g in gauges:
-         regions.append([5, 5, 6.0*3600.0, clawdata.tfinal, g[1]-0.10, g[1]+0.10, g[2]-0.10, g[2]+0.10])
+         regions.append([5, 5, 5.0*3600.0, clawdata.tfinal, g[1]-0.10, g[1]+0.10, g[2]-0.10, g[2]+0.10])
 
     # DART buoy 地点を gauge に追加
-    #gauges.append([21418, 148.836, 38.723, 0., 1.e10]) #
+    gauges.append([21418, 148.836, 38.723, 0., 1.e10]) #
     gauges.append([21420, 134.968, 28.912, 0., 1.e10]) #
     gauges.append([52401, 155.739, 19.285, 0., 1.e10]) #
     gauges.append([52402, 153.895, 11.930, 0., 1.e10]) #
@@ -435,17 +435,17 @@ def setrun(claw_pkg='geoclaw'):
     fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 30 + 1
     fgout_grids.append(fgout)
 
-    ## Ryukyu islands
+    ## Around Japan
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 2
     fgout.output_format = 'ascii'
     fgout.x1 = 125.0
-    fgout.x2 = 135.0
+    fgout.x2 = 150.0
     fgout.y1 = 20.0
     fgout.y2 = 30.0
     fgout.nx = int( (fgout.x2 - fgout.x1) * 30 )
     fgout.ny = int( (fgout.y2 - fgout.y1) * 30 )
-    fgout.tstart = 3600.0*5.5
+    fgout.tstart = 3600.0*5.0
     fgout.tend = clawdata.tfinal
     fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 60 + 1
     fgout_grids.append(fgout)

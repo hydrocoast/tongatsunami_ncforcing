@@ -8,8 +8,8 @@ echo '# LIST OF STORM DATA FILES                                  # ' >> $fnameo
 echo '# Atmospheric data in NetCDF format                         # ' >> $fnameout
 echo '# ========================================================= # ' >> $fnameout
 echo ' ' >> $fnameout
-echo 120.0 >> $fnameout
-echo $(ls -1 ../slp_nc_presA/*.nc | wc -l) >> $fnameout
+echo '300.0              =: dt_file' >> $fnameout
+echo $(ls -1 ../dNami_slp/*.nc | wc -l) >> $fnameout
 ls -1 ../slp_nc_presA/*.nc | awk -v cdir=`pwd` '{printf "%s/%s\n", cdir, $1}' >> $fnameout
 echo "$fnameout has been made"
 
