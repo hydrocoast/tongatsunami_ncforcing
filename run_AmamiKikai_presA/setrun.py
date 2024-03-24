@@ -109,10 +109,10 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 125.0    # west longitude
+    clawdata.lower[0] = 120.0    # west longitude
     clawdata.upper[0] = 200.0   # east longitude
     clawdata.lower[1] = -55.0    # south latitude
-    clawdata.upper[1] = 30.0   # north latitude
+    clawdata.upper[1] = 40.0   # north latitude
 
     # Number of grid cells
     degree_factor = 5
@@ -353,10 +353,10 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([1, 1, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
-    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 125.0, 150.0, 10.0, 30.0])
+    regions.append([1, 2, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
+    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 120.0, 145.0, 10.0, 34.0])
     ## Level 4
-    regions.append([1, 4, 4.0*3600.0, clawdata.tfinal, 125.0, 140.0, 20.0, 29.0])
+    regions.append([1, 4, 4.5*3600.0, clawdata.tfinal, 125.0, 135.0, 20.0, 29.0])
     ## Level 5
     topo_file = topotools.Topography(os.path.join(topodir, topoflist['AmamiKikai']), topo_type=3)
     regions.append([1, 5, 5.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])

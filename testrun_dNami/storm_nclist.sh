@@ -10,6 +10,6 @@ echo '# ========================================================= # ' >> $fnameo
 echo ' ' >> $fnameout
 echo '300.0              =: dt_file' >> $fnameout
 echo $(ls -1 ../dNami_slp/*.nc | wc -l) >> $fnameout
-ls -1 ../slp_nc_presA/*.nc | awk -v cdir=`pwd` '{printf "%s/%s\n", cdir, $1}' >> $fnameout
+ls -1 ../dNami_slp/*.nc | awk -v cdir=`pwd` '{printf "%s/%s\n", cdir, $1}' >> $fnameout
 echo "$fnameout has been made"
 

@@ -35,6 +35,7 @@ topodir = os.path.join(os.getcwd(), '..', 'bathtopo')
 topoflist = {
              "GEBCO2022"      :"gebco_2022_n60.0_s-60.0_w110.0_e240.0.nc",
              "Amami"          :"zone01_depth_0090-03_lonlat.asc",
+             "AmamiKikai"     :"zone01_depth_0090_blend34.asc",
              "Tanegashima"    :"zone02_depth_0090-06_lonlat.asc",
              "Aburatsu"       :"zone02_depth_0090-07_lonlat.asc",
              "BungoChannel"   :"zone02_depth_0090-10_lonlat.asc",
@@ -108,10 +109,10 @@ def setrun(claw_pkg='geoclaw'):
     clawdata.num_dim = num_dim
 
     # Lower and upper edge of computational domain:
-    clawdata.lower[0] = 125.0    # west longitude
+    clawdata.lower[0] = 120.0    # west longitude
     clawdata.upper[0] = 200.0   # east longitude
     clawdata.lower[1] = -55.0    # south latitude
-    clawdata.upper[1] = 30.0   # north latitude
+    clawdata.upper[1] = 40.0   # north latitude
 
     # Number of grid cells
     degree_factor = 5
@@ -158,7 +159,7 @@ def setrun(claw_pkg='geoclaw'):
     # The solution at initial time t0 is always written in addition.
 
     clawdata.output_style = 2
-    clawdata.tfinal = 3600.0*20.0
+    clawdata.tfinal = 3600.0*16.0
 
     if clawdata.output_style==1:
         # Output nout frames at equally spaced times up to tfinal:
@@ -352,12 +353,12 @@ def setrun(claw_pkg='geoclaw'):
     regions = rundata.regiondata.regions
     # to specify regions of refinement append lines of the form
     #  [minlevel,maxlevel,t1,t2,x1,x2,y1,y2]
-    regions.append([1, 1, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
-    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 125.0, 150.0, 10.0, 30.0])
+    regions.append([1, 2, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
+    regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 120.0, 145.0, 10.0, 34.0])
     ## Level 4
-    regions.append([1, 4, 4.0*3600.0, clawdata.tfinal, 128.0, 138.0, 20.0, 29.0])
+    regions.append([1, 4, 4.5*3600.0, clawdata.tfinal, 128.0, 131.0, 27.0, 29.0])
     ## Level 5
-    topo_file = topotools.Topography(os.path.join(topodir, topoflist['Amami']), topo_type=3)
+    topo_file = topotools.Topography(os.path.join(topodir, topoflist['AmamiKikai']), topo_type=3)
     regions.append([1, 5, 5.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
 
     # Target simulation domain
@@ -440,8 +441,8 @@ def setrun(claw_pkg='geoclaw'):
     fgout.fgno = 2
     fgout.output_format = 'ascii'
     fgout.x1 = 125.0
-    fgout.x2 = 135.0
-    fgout.y1 = 20.0
+    fgout.x2 = 140.0
+    fgout.y1 = 10.0
     fgout.y2 = 30.0
     fgout.nx = int( (fgout.x2 - fgout.x1) * 30 )
     fgout.ny = int( (fgout.y2 - fgout.y1) * 30 )
@@ -451,7 +452,7 @@ def setrun(claw_pkg='geoclaw'):
     fgout_grids.append(fgout)
 
     ## Amami
-    topo_file = topotools.Topography(os.path.join(topodir, topoflist['Amami']), topo_type=3)
+    topo_file = topotools.Topography(os.path.join(topodir, topoflist['AmamiKikai']), topo_type=3)
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 3
     fgout.output_format = 'ascii'
@@ -530,7 +531,8 @@ def setgeo(rundata):
     # See regions for control over these regions, need better bathy data for the
     # smaller domains
     topo_data.topofiles.append( [4, os.path.join(topodir, topoflist['GEBCO2022'])] )
-    topo_data.topofiles.append( [3, os.path.join(topodir, topoflist['Amami'])] )
+    #topo_data.topofiles.append( [3, os.path.join(topodir, topoflist['Amami'])] )
+    topo_data.topofiles.append( [3, os.path.join(topodir, topoflist['AmamiKikai'])] )
 
     # == setdtopo.data values ==
     dtopo_data = rundata.dtopo_data
