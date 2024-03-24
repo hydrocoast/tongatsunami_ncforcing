@@ -35,7 +35,7 @@ topodir = os.path.join(os.getcwd(), '..', 'bathtopo')
 topoflist = {
              "GEBCO2022"      :"gebco_2022_n60.0_s-60.0_w110.0_e240.0.nc",
              "Amami"          :"zone01_depth_0090-03_lonlat.asc",
-             "AmamiKikai"     :"zone01_depth_0090_blend34.asc"
+             "AmamiKikai"     :"zone01_depth_0090_blend34.asc",
              "Tanegashima"    :"zone02_depth_0090-06_lonlat.asc",
              "Aburatsu"       :"zone02_depth_0090-07_lonlat.asc",
              "BungoChannel"   :"zone02_depth_0090-10_lonlat.asc",
