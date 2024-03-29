@@ -50,4 +50,5 @@ xgeoclaw
 .plots
 __pycache__/
 jaguar
+nc_dNami
 !fig/**
