@@ -358,18 +358,27 @@ def setrun(claw_pkg='geoclaw'):
     regions.append([1, 1, clawdata.t0, clawdata.tfinal, clawdata.lower[0], clawdata.upper[0], clawdata.lower[1], clawdata.upper[1]])
     regions.append([1, 2, 2.0*3600.0, clawdata.tfinal, 110.0, 160.0,  0.0, 40.0])
     regions.append([1, 3, 4.0*3600.0, clawdata.tfinal, 115.0, 150.0, 10.0, 35.0])
-    regions.append([1, 4, 4.5*3600.0, clawdata.tfinal, 120.0, 140.0, 15.0, 31.0])
+    regions.append([1, 4, 4.5*3600.0, clawdata.tfinal, 120.0, 140.0, 15.0, 32.5])
 
     ## Level 5
+    #topo_file = topotools.Topography(os.path.join(topodir, topoflist['Ishigaki']), topo_type=3)
+    #regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
+    #topo_file = topotools.Topography(os.path.join(topodir, topoflist['Naha']), topo_type=3)
+    #regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
     topo_file = topotools.Topography(os.path.join(topodir, topoflist['Amami']), topo_type=3)
     regions.append([1, 5, 5.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
+    #topo_file = topotools.Topography(os.path.join(topodir, topoflist['Tanegashima']), topo_type=3)
+    #regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
+    #topo_file = topotools.Topography(os.path.join(topodir, topoflist['Aburatsu']), topo_type=3)
+    #regions.append([1, 5, 4.0*3600.0, clawdata.tfinal, topo_file.x[0], topo_file.x[-1], topo_file.y[0], topo_file.y[-1]])
 
     # Target simulation domain
     gauges = rundata.gaugedata.gauges
     gauges.append([1, 124.1390, 24.3229, 0., 1.e10]) # Ishigaki
     gauges.append([2, 127.6560, 26.2229, 0., 1.e10]) # Naha
     gauges.append([3, 129.5370, 28.3229, 0., 1.e10]) # Amami
-    gauges.append([4, 130.9644, 30.4636, 0., 1.e10]) # Tanegashima
+    gauges.append([4, 130.9730, 30.4604, 0., 1.e10]) # Tanegashima
+    gauges.append([5, 131.4060, 31.5688, 0., 1.e10]) # Aburatsu
 
     ## regions -- gauge の周辺だけ解像度レベルを高い状態に保つ
     #for g in gauges:

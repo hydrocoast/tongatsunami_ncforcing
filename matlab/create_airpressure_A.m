@@ -20,7 +20,7 @@ lon0 = -175.393311 + 360.0;
 %% lonlat
 latrange = [-60,60];
 lonrange = [110,200.2];
-dl = 0.20;
+dl = 0.10;
 nlon = round(abs(diff(lonrange))/dl)+1;
 nlat = round(abs(diff(latrange))/dl)+1;
 lon = linspace(lonrange(1),lonrange(2),nlon);
@@ -30,13 +30,14 @@ lat = linspace(latrange(1),latrange(2),nlat);
 degmesh = sqrt((LON-lon0).^2 + (LAT-lat0).^2);
 kmmesh = deg2km(degmesh);
 
-checkpoint = [135.0,32.5];
+% checkpoint = [135.0,32.5];
+checkpoint = [129.5,28.3];
 [~,indchk_lon] = min(abs(checkpoint(1)-lon));
 [~,indchk_lat] = min(abs(checkpoint(2)-lat));
 
 
 %% parameters
-dt = 120;
+dt = 60;
 t = dt:dt:3600*16;
 nt = length(t);
 %% parameters below are based on Gusman et al.(2022), PAGEOPH
