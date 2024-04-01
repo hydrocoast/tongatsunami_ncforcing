@@ -41,6 +41,7 @@ gmt.*
 *.sh.p*
 *.sh.e*
 *.DS_Store
+dart*.txt
 nohup.out
 _output/
 _plots/
