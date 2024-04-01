@@ -11,6 +11,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import os
+import glob
 import datetime
 import shutil
 import gzip
@@ -558,6 +559,7 @@ def setgeo(rundata):
     # storm data file
     #data.storm_file = os.path.join(os.getcwd())
     data.storm_file = os.getcwd()
+    #data.storm_file = glob.glob(os.path.join(os.getcwd(),'../slp_nc_presA','*.nc'))
 
 
     # =======================
