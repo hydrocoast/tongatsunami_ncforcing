@@ -10,26 +10,36 @@ np_obs = size(table_obs_pres,1);
 
 %% pressure ncfile
 % ========================================================
-% savefile = 'pres_jaguar_obslocation.mat';
-% ncdir = '../jaguar';
-% dt_file = 60.0;
-% flist = dir(fullfile(ncdir,'slp_jaguar5_*.nc'));
-% t_offset = 0.0;
+savefile = 'pres_jaguar_obslocation.mat';
+ncdir = '../jaguar';
+dt_file = 60.0;
+flist = dir(fullfile(ncdir,'slp_jaguar5_*.nc'));
+t_offset = 22*60.0;
 % ========================================================
-savefile = 'pres_dNami_obslocation.mat';
-ncdir = '../nc_dNami';
-dt_file = 300.0;
-flist = dir(fullfile(ncdir,'groundPressure_*.nc'));
-t_offset = 2.25*3600;
+% savefile = 'pres_dNami_obslocation.mat';
+% ncdir = '../nc_dNami';
+% dt_file = 300.0;
+% flist = dir(fullfile(ncdir,'groundPressure_*.nc'));
+% t_offset = 2.25*3600;
 % ========================================================
 nfile = size(flist,1);
 t = linspace(0.0,(nfile-1)*dt_file,nfile);
 
+ncid = netcdf.open(fullfile(ncdir,flist(1).name),'nowrite');
 
-% [lon,lat,tmp] = grdread2(fullfile(ncdir,flist(1).name));
+varname = 'slp';
+try
+    ID = netcdf.inqVarID(ncid,varname);
+catch exception
+    if strcmp(exception.identifier,'MATLAB:imagesci:netcdf:libraryFailure')
+        varname = 'psl';
+    end
+end
+netcdf.close(ncid);
+
 lon = ncread(fullfile(ncdir,flist(1).name),'lon');
 lat = ncread(fullfile(ncdir,flist(1).name),'lat');
-tmp = permute(ncread(fullfile(ncdir,flist(3).name),'slp'),[2,1]);
+tmp = permute(ncread(fullfile(ncdir,flist(3).name),varname),[2,1]);
 
 [LON,LAT] = meshgrid(lon,lat);
 
@@ -49,7 +59,7 @@ indobs = sub2ind(size(tmp),indobs_lat,indobs_lon);
 slp = zeros(nfile,np_obs);
 for i = 1:nfile
     if mod(i,50)==0; fprintf('%d/%d\n',i,nfile); end
-    slp_snap = permute(ncread(fullfile(ncdir,flist(i).name),'slp'),[2,1]);
+    slp_snap = permute(ncread(fullfile(ncdir,flist(i).name),varname),[2,1]);
     slp(i,:) = slp_snap(indobs);
     clear slp_snap
 end

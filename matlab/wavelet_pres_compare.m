@@ -3,7 +3,7 @@ close all
 
 matname_pres = 'pres_lg_A.mat';
 load(matname_pres);
-
+palette = crameri('imola');
 %% parameters
 fs = 1/dt; % Hz
 
@@ -16,7 +16,7 @@ pres_point = squeeze(pres(indchk_lat,indchk_lon,:));
 
 
 %% wavelet analysis
-[wt,f] = cwt(pres_point,'morse',fs);
+[wt,f] = cwt(pres_point.*1e2,'morse',fs);
 perT = 1./f;
 
 %% plot
@@ -45,7 +45,8 @@ axw.YAxis.TickValues = [5,10,20,50,100,200];
 yline([1,10,100],'-','Color',[.8,.8,.8]);
 yline([2:1:9,20:10:90,200],'--','Color',[.8,.8,.8],'Alpha',0.5,'LineWidth',0.5);
 
-clim(axw,[-40,-10]);
+colormap(axw,palette);
+clim(axw,[0,25]);
 set(axw,'YScale','log','YDir','reverse','FontName','Helvetica','FontSize',12);
 
 cb = colorbar(axw,'east','FontName','Helvetica','FontSize',12);
