@@ -65,8 +65,8 @@ if active_g == 1
     coef_g_t = [ -5; -10;  20;-40; 25; 20; 10; 10; -20;      -20; -25; -20; 8;  10; 10; -10; -20;-20; 20; 20; 20; 20; 20; -10; -10; -10;-10;-10;-10;-10];
     nwave_g = length(wavelength_g);
 
-    % k_g = 2*pi./(wavelength_g.*1e3);
-    k_g = 2*pi./(2*wavelength_g.*1e3); % wavelength_g represents a half wavelength!!!
+    k_g = 2*pi./(wavelength_g.*1e3);
+    % k_g = 2*pi./(2*wavelength_g.*1e3); % wavelength_g represents a half wavelength!!!
 
 
     sigma_g = zeros(nwave_g,1);
@@ -81,7 +81,7 @@ end
 %% create pressure data
 pres = zeros(nlat, nlon, nt);
 for k = 1:nt
-    fprintf('%03d,',k);
+    if mod(k,20)==0; fprintf('%03d,',k); end
 
     %% Lamb wave
     dist_peak = cs*t(k)*1e-3; % km
@@ -128,7 +128,7 @@ if active_g == 1
 
     %% Gravity wave(s)
     for k = 1:nt
-        fprintf('%03d,',k);
+        if mod(k,20)==0; fprintf('%03d,',k); end
         dist_peak = c_g.*t(k)*1e-3; % km
         for i = 1:nlat
             for j = 1:nlon
@@ -161,18 +161,18 @@ if active_g == 1
 
 end
 
-% %% check time-series of the air pressure
-% figure
-% plot(t/3600,squeeze(pres(indchk_lat,indchk_lon,:)));
-% xlim([6.0,12.0]);
-% grid on
-% 
-% print('気圧波形_l','-djpeg')
-% %% save
-% save(matname_pres,'-v7.3',...
-%      'lon0','lat0','lonrange','latrange','lon','lat',...
-%      'nlon','nlat','dl','pres',...
-%      'cs','wavelength','dt','t','nt','active_g')
+%% check time-series of the air pressure
+figure
+plot(t/3600,squeeze(pres(indchk_lat,indchk_lon,:)));
+xlim([6.0,12.0]);
+grid on
+
+print('気圧波形_l','-djpeg')
+%% save
+save(matname_pres,'-v7.3',...
+     'lon0','lat0','lonrange','latrange','lon','lat',...
+     'nlon','nlat','dl','pres',...
+     'cs','wavelength','dt','t','nt','active_g')
 
 
 % %% output
