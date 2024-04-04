@@ -6,7 +6,7 @@ close all
 %% filename
 % matfile = 'pres_lamb.mat';
 matfile = 'pres_lg_A.mat';
-% matfile = 'pres_lg_B.mat';
+% matfile = 'pres_lg_B.mat'; 
 load(matfile)
 
 %% output
