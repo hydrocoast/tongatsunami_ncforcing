@@ -2,8 +2,9 @@
 
 fnameout='storm_list.data'
 dir_current=`pwd`
-dir_nc="nc_presA"
+dir_nc="nc_dNami"
 dt_file=60.0
+
 
 echo '# ========================================================= # ' > $fnameout
 echo '# LIST OF STORM DATA FILES                                  # ' >> $fnameout
