@@ -3,7 +3,7 @@
 fnameout='storm_list.data'
 dir_current=`pwd`
 dir_nc="nc_dNami"
-dt_file=60.0
+dt_file=300.0
 
 
 echo '# ========================================================= # ' > $fnameout
