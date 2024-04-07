@@ -5,8 +5,10 @@ close all
 % --------------------------------------
 simdir1 = '../run_presA1min_3/_output';
 simdir2 = '../run_jaguar/_output';
-simcase_label = {'Parametric pressure model','JAGUAR'};
+simcase_label = {'Parametric','JAGUAR'};
 simcase_prefix = 'waveforms_PJ';
+t_offset1 = 0.0;
+t_offset2 = 0.34;
 % --------------------------------------
 cmap = lines(7);
 LC1 = cmap(7,:);
@@ -20,7 +22,8 @@ if ngauge ~= size(list_gauge2,1)
 end
 
 %% obs data
-load('DART_records.mat');
+% load('DART_records.mat');
+load('DART_records_rev.mat');
 
 %% directory for export figs
 option_printfig = 0; % 1: on, others: off
@@ -63,44 +66,23 @@ for i = 1:ngauge
     %% read
 
     % --- simulation A
-    dat1 = readmatrix(file1,"FileType","text","NumHeaderLines",3);
+    dat1 = readmatrix(file1,"FileType","text","CommentStyle",'#');
     g{i,1} = [dat1(:,2),dat1(:,6),dat1(:,1)]; % time, eta, AMRlevel
 
     % --- simulation B
-    dat2 = readmatrix(file2,"FileType","text","NumHeaderLines",3);
+    dat2 = readmatrix(file2,"FileType","text","CommentStyle",'#');
     g{i,2} = [dat2(:,2),dat2(:,6),dat2(:,1)]; % time, eta, AMRlevel
 
     %% 近い観測点がない場合はスキップ
     if isempty(ind_row); continue; end
-
-    time_offset = 0.0;
     
     %% plot
     ax(tn) = nexttile;
-    xrange = [3,11];
-    % switch gid
-    %     case 21420
-    %         ax(1) = nexttile(1);
-    %         xrange = [5,11];
-    %     case 21418
-    %         ax(2) = nexttile(2);
-    %         xrange = [5,11];
-    %     case 52404
-    %         ax(3) = nexttile(3);
-    %         xrange = [5,11];
-    %     case 52401
-    %         ax(4) = nexttile(4);
-    %         xrange = [3,9];
-    %     case 52402
-    %         ax(5) = nexttile(5);
-    %         xrange = [3,9];
-    %     otherwise
-    %         error('Unavailable DART id')
-    % end
+    xrange = [1.5,11.5];
 
     hold on
-    p1 = plot(g{i,1}(:,1)./3600 + time_offset, g{i,1}(:,2)*100,'-','LineWidth',2,'Color',LC1);
-    p2 = plot(g{i,2}(:,1)./3600 + time_offset, g{i,2}(:,2)*100,'-','LineWidth',2,'Color',LC2);
+    p1 = plot(g{i,1}(:,1)./3600 + t_offset1, g{i,1}(:,2)*100,'-','LineWidth',2,'Color',LC1);
+    p2 = plot(g{i,2}(:,1)./3600 + t_offset2, g{i,2}(:,2)*100,'-','LineWidth',2,'Color',LC2);
     grid on; box on
     p1.Color(4) = 0.8;
     p2.Color(4) = 0.8;
@@ -108,7 +90,7 @@ for i = 1:ngauge
     hold on
     p3 = plot(cell2mat(table_DART.Time(ind_row))./3600, cell2mat(table_DART.Eta_filtered(ind_row)),'k-','LineWidth',1);
     xlim(xrange);
-    text(xrange(1)+0.3,4.0,...
+    text(xrange(1)+0.65,5.0,...
          sprintf('%05d',table_DART.DART(ind_row)),...
          'FontName','Helvetica','FontSize',20,...
          'HorizontalAlignment','left','VerticalAlignment','middle');
@@ -116,21 +98,27 @@ for i = 1:ngauge
 
     % legend([p1,p2,p3],{simcase_label{1},simcase_label{2},'Obs.'},'FontName','Helvetica','FontSize',14,'Location','southwest');
     set(gca,'FontName','Helvetica','FontSize',16)
-    set(gca,'XTick',xrange(1):xrange(2));
-    set(gca,'YTick',-4:2:4);
+    set(gca,'XTick',0:2:20);
+    set(gca,'YTick',-6:2:6);
 end
 
-xlabel(ax(4:5),"Elapsed time (hour)",'FontName','Helvetica','FontSize',20);
+ax(1).XAxis.TickLabels = '';
+ax(2).XAxis.TickLabels = '';
+ax(3).XAxis.TickLabels = '';
+ax(4).XAxis.TickLabels = '';
+
+
+xlabel(ax(5),"Relative time (hour)",'FontName','Helvetica','FontSize',20);
+% xlabel(ax(5:6),"Relative time (hour)",'FontName','Helvetica','FontSize',20);
 ylabel(ax(3),"Surface elevation (cm)",'FontName','Helvetica','FontSize',20);
 ax(2).YAxis.TickLabels = '';
 ax(4).YAxis.TickLabels = '';
+ax(6).YAxis.TickLabels = '';
 
-ax(6) = nexttile(6);
-set(ax(6),'Visible','off');
-legend(ax(6),[p1,p2,p3],{simcase_label{1},simcase_label{2},'Obs.'},'FontName','Helvetica','FontSize',20,'Location','northwest');
+legend(ax(5),[p1,p2,p3],{simcase_label{1},simcase_label{2},'Obs.'},'FontName','Helvetica','FontSize',20,'Location','southwest','Orientation','horizontal');
 
 linkaxes(ax,'y');
-ylim([-4,5]);
+ylim([-7,7]);
 
 tile.TileSpacing = 'tight';
 tile.Padding = 'compact';
