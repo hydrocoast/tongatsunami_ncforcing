@@ -25,8 +25,8 @@ dt = 1/fs; % s
 fig = figure; print(fig,'-dpng','tmp.png'); delete('tmp.png');
 
 % for i = 1:nstation
-for i = [3,8,9,30]
-% for i = 3
+% for i = [3,8,9,30]
+for i = 3
 
     label_station = JMA.Name{i};
 
@@ -64,18 +64,18 @@ for i = [3,8,9,30]
     ylabel(axw,'Period (min)','FontName','Helvetica','FontSize',16);
     axw.YAxis.TickValues = [5,10,20,50,100];
     yline([10,100],'-','Color',[.8,.8,.8],'LineWidth',2);
-    yline([2:1:9,20:10:90,200],'--','Color',[.8,.8,.8],'Alpha',0.5,'LineWidth',2);
+    yline([2:1:9,12,15,20:10:90,200],'--','Color',[.8,.8,.8],'Alpha',0.5,'LineWidth',2);
 
-    clim(axw,[0,30]);
+    clim(axw,[0,35]);
     set(axw,'YScale','log','YDir','reverse','FontName','Helvetica','FontSize',16);
 
     cb = colorbar(axw,'west','FontName','Helvetica','FontSize',16);
-    cb.Label.String = 'Power (dB)';
+    cb.Label.String = 'Magnitude';
     cb.Label.Color = 'w';
     cb.Color = 'w';
     set(axw,'XTick',range_t(1):range_t(end));
 
-    xlabel(axw,'Elapsed time (hour)','FontName','Helvetica','FontSize',18);
+    xlabel(axw,'Relative time (hour)','FontName','Helvetica','FontSize',18);
     linkaxes([axt,axw],'x');
     xlim(axt,range_t);
 
@@ -91,7 +91,7 @@ for i = [3,8,9,30]
     filename_png = ['wavelet_JMAsurf_',label_station,'.png'];
     filename_pdf = strrep(filename_png,'.png','.pdf');
     % exportgraphics(gcf,fullfile(figdir,filename_png),'ContentType','image','Resolution',300);
-    exportgraphics(gcf,filename_pdf,'ContentType','vector');
+    % exportgraphics(gcf,filename_pdf,'ContentType','vector');
 
 end
 
