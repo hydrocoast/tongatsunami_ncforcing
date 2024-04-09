@@ -6,3 +6,4 @@ rsync -av "miyashita@$hostname:Research/AMR/tongatsunami_ncforcing/$simdir/_outp
 rsync -av "miyashita@$hostname:Research/AMR/tongatsunami_ncforcing/$simdir/_plots" .
 rsync -av "miyashita@$hostname:Research/AMR/tongatsunami_ncforcing/$simdir/_mat" .
 rsync -av "miyashita@$hostname:Research/AMR/tongatsunami_ncforcing/$simdir/_grd/fg*_max.grd" .
+rsync -av "miyashita@$hostname:Research/AMR/tongatsunami_ncforcing/$simdir/_grd/fgout0002_0*.grd" .
