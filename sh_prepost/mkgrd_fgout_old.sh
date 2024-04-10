@@ -22,6 +22,7 @@ xlow=$( awk 'NR==5 {printf "%e", $1}' $fgfile )
 ylow=$( awk 'NR==6 {printf "%e", $1}' $fgfile )
 dx=$( awk 'NR==7 {printf "%e", $1}' $fgfile )
 dy=$( awk 'NR==8 {printf "%e", $1}' $fgfile )
+
 xh=$( echo $xlow $dx $mx | awk '{printf "%e", $1+$2*$3}') 
 yh=$( echo $ylow $dy $my | awk '{printf "%e", $1+$2*$3}') 
 #echo $yh
@@ -50,10 +51,13 @@ radius=`echo $dx $dy | awk '{printf "%f", sqrt($1*$1 + $2*$2)}'`
 #echo $radius
 
 awk -v mx=$mx -v xlow=$xlow -v ylow=$ylow -v dx=$dx -v dy=$dy '{ \
-if (NR>9 && (NR-9)%(mx+1)!=0 && $1<1e-3 && $1>-1e-3 ) \
-{printf "%e, %e, %e\n", xlow + dx*int((NR-9)%(mx+1)-1) + 0.5*dx, ylow + dy*int((NR-9)/(mx+1)) + 0.5*dy, 0.0} else \
-{printf "%e, %e, %e\n", xlow + dx*int((NR-9)%(mx+1)-1) + 0.5*dx, ylow + dy*int((NR-9)/(mx+1)) + 0.5*dy, $4*100} \
+if (NR>9 && (NR-9)%(mx+1)!=0 ) \
+{printf "%e, %e, %e\n", \
+	xlow + dx*int((NR-9)%(mx+1)-1) + 0.5*dx, \
+	ylow + dy*int((NR-9)/(mx+1)) + 0.5*dy, \
+	$4*100} \
 }' $fgfile | \
-gmt surface -I$dx/$dy -R$region -G$grdfile
+gmt nearneighbor -I$dx/$dy -R$region -G$grdfile -S$radius
+#gmt surface -I$dx/$dy -R$region -G$grdfile 
 
 mv $grdfile "_grd/"
