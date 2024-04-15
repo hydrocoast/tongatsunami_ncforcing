@@ -4,8 +4,9 @@ close all
 %% 作成した気圧データをGeoClawで計算するためのテキストファイルに出力
 
 %% filename
+matfile = 'pres_synthetic.mat';
 % matfile = 'pres_lamb.mat';
-matfile = 'pres_lg_A.mat';
+% matfile = 'pres_lg_A.mat';
 % matfile = 'pres_lg_B.mat'; 
 load(matfile)
 
