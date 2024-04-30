@@ -90,7 +90,7 @@ for k = 1:nt
     dist_trough = max(1,dist_peak-0.4*wavelength); % km
     amp_trough = amp(dist_trough,coef_lamb_trough);
 
-    dist_peak_add = max(1,dist_peak-0.7*wavelength_add); % km howahowa
+    dist_peak_add = max(1,dist_peak-0.7*wavelength_add); % km
     amp_peak_add = amp(dist_peak_add,coef_lamb_add);
 
     for i = 1:nlat

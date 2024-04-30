@@ -14,8 +14,8 @@ lon0 = -175.393311 + 360.0;
 %% lonlat
 latrange = [-60,60];
 lonrange = [110,200.2];
-% dl = 0.20;
-dl = 1.0;
+dl = 0.10;
+% dl = 1.0;
 nlon = round(abs(diff(lonrange))/dl)+1;
 nlat = round(abs(diff(latrange))/dl)+1;
 lon = linspace(lonrange(1),lonrange(2),nlon);
@@ -30,10 +30,6 @@ checkpoint = [129.5,28.3];
 [~,indchk_lat] = min(abs(checkpoint(2)-lat));
 
 
-%% parameters
-dt = 120;
-t = dt:dt:3600*18;
-nt = length(t);
 
 %% parameters below are based on Gusman et al.(2022), PAGEOPH
 cs = 310.0; % m/s
@@ -47,7 +43,7 @@ mu = 0.5*(N^2/g + g/cs^2); % /m
 sigma0 = mu*cs;
 
 nrepeat = 3;
-wavelength_g = 267.44; % 波長(km) T=45 min, c=198.10 m/s
+% wavelength_g = 267.44; % 波長(km) T=45 min, c=198.10 m/s
 % wavelength_g = 236.95; % 波長(km) T=40 min, c=197.45 m/s
 % wavelength_g = 206.3; % 波長(km) T=35 min, c=196.47 m/s
 % wavelength_g = 175.45; % 波長(km) T=30 min, c=194.9 m/s
@@ -55,9 +51,10 @@ wavelength_g = 267.44; % 波長(km) T=45 min, c=198.10 m/s
 % wavelength_g = 112.2; % 波長(km) T=20 min, c=187.1 m/s
 % wavelength_g = 78.3; % 波長(km) T=15 min, c=173.9 m/s
 % wavelength_g = 54.5; % 波長(km) T=12 min, c=151.3 m/s
-% wavelength_g = 31.9; % 波長(km) T=10 min, c=106.3 m/s
+wavelength_g = 31.9; % 波長(km) T=10 min, c=106.3 m/s
 wavelength_g = repmat(wavelength_g,[nrepeat,1]); %同じ波長の繰り返し
 coef_g = 45; %振幅(peak)
+
 
 nwave_g = length(wavelength_g);
 k_g = pi./(wavelength_g.*1e3);
@@ -69,7 +66,16 @@ for iwave = 1:nwave_g
     c_g = sigma_g./k_g;
     T_g = 2*pi./sigma_g/60; %min
 end
-       
+
+
+%% parameters
+dt = 60;
+t_start = dt*round(5000e3/c_g(1)/dt); % 中心から5,000km離れた地点に到達した時刻から
+t_end = dt*round(10000e3/c_g(1)/dt); % 中心から10,000km離れた地点に到達した時刻まで
+Tduration = t_end-t_start;
+t = t_start:dt:t_end;
+nt = length(t);
+
 
 %% create pressure data
 pres = zeros(nlat, nlon, nt);
@@ -112,8 +118,8 @@ p = fig.Position;
 fig.Position = [0.5*p(1), 0.5*p(2), 1.2*p(3), 0.75*p(4)];
 ax = nexttile;
 plot(t/3600,squeeze(pres(indchk_lat,indchk_lon,:)),'Color','b','LineWidth',2.0);
-xlim([0.0,t(end)/3600]);
-ylim([-1.2,2.0]);
+xlim([floor(t(1)/3600),t(end)/3600]);
+ylim([-1.2,1.2]);
 % xticks(0.0:1.0:10.0)
 ylabel(ax,'Pressure anomaly (hPa)','FontName','Times','FontSize',18,HorizontalAlignment='center');
 xlabel(ax,'Elapsed time (hour)','FontName','Times','FontSize',18,HorizontalAlignment='center');
