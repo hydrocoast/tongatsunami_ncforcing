@@ -4,10 +4,14 @@ close all
 %% 作成した気圧データをGeoClawで計算するためのテキストファイルに出力
 
 %% filename
-matfile = 'pres_synthetic.mat';
+% matfile = 'pres_synthetic.mat';
 % matfile = 'pres_lamb.mat';
 % matfile = 'pres_lg_A.mat';
 % matfile = 'pres_lg_B.mat'; 
+% matfile = 'pres_T010min_03waves.mat';
+% matfile = 'pres_T012min_03waves.mat';
+% matfile = 'pres_T015min_03waves.mat';
+matfile = 'pres_T020min_03waves.mat';
 load(matfile)
 
 %% output
