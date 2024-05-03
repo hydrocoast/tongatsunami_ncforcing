@@ -41,7 +41,7 @@ g = 9.8; % m/s^2
 
 nrepeat = 3;
 
-c_g = 190.0;
+c_g = 195.0;
 c_g = repmat(c_g,[nrepeat,1]); %同じ波長の繰り返し
 
 T_g = 12.0*60;
