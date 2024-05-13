@@ -8,8 +8,8 @@ fname2 = '../run_presA1min_regionC/_grd/fg0002_max.grd';
 [~,~,zmax2] = grdread2(fname2); zmax2(abs(zmax2)<0.5) = NaN;
 
 
-% bwr = createcolormap(10,[0,0,1;1,1,1;1,0,0]);
-bwr = lines(10);
+bwr = createcolormap(10,[0,0,1;1,1,1;1,0,0]);
+% bwr = lines(10);
 
 fig = figure("Position",[300,600,1500,450]);
 tile = tiledlayout(1,3);
