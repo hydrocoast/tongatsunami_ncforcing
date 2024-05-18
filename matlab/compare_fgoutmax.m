@@ -1,6 +1,8 @@
 clear
 close all
 
+% fname1 = '../run_presA1min_3/_grd/fg0003_max.grd';
+% fname2 = '../run_presA1min_regionC/_grd/fg0003_max.grd';
 fname1 = '../run_presA1min_3/_grd/fg0002_max.grd';
 fname2 = '../run_presA1min_regionC/_grd/fg0002_max.grd';
 
@@ -38,3 +40,20 @@ clim(ax3,[-10,10]);
 colorbar(ax3,"west");
 
 tile.TileSpacing = "tight";
+
+
+zratio = 100*(zmax1-zmax2)./zmax2;
+
+grdwrite2(x,y,zratio,'zratio3.grd');
+
+
+bwr16 = createcolormap(16,[0,0,1;1,1,1;1,0,0]);
+
+figure;
+pcolor(x,y,zratio); shading flat
+axis equal tight;
+colorbar;
+
+clim([-80,80]);
+colormap(bwr16);
+
