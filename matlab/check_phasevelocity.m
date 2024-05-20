@@ -2,7 +2,7 @@ clear
 close all
 
 
-fname = './GEBCO_2023_sub_ice_125_138_20_30.nc';
+fname = '../bathtopo/GEBCO_2022_128_138_20_30.nc';
 outgrdname = 'phasevel_depth.grd';
 
 [lon,lat,topo] = grdread2(fname);

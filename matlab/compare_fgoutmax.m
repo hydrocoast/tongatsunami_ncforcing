@@ -6,17 +6,17 @@ close all
 % fname2 = '../run_presA1min_regionC_fg/_grd/fg0002_max.grd';
 % outgrdname = 'zratioAC_fg02.grd';
 % % ---------------------------------
-% fname1 = '../run_presA1min_regionA_fg/_grd/fg0003_max.grd';
-% fname2 = '../run_presA1min_regionC_fg/_grd/fg0003_max.grd';
-% outgrdname = 'zratioAC_fg03.grd';
+fname1 = '../run_presA1min_regionA_fg/_grd/fg0003_max.grd';
+fname2 = '../run_presA1min_regionC_fg/_grd/fg0003_max.grd';
+outgrdname = 'zratioAC_fg03.grd';
 % % ---------------------------------
 % fname1 = '../run_presA1min_regionA_fg/_grd/fg0002_max.grd';
 % fname2 = '../run_presA1min_regionB_fg/_grd/fg0002_max.grd';
 % outgrdname = 'zratioAB_fg02.grd';
 % % ---------------------------------
-fname1 = '../run_presA1min_regionA_fg/_grd/fg0003_max.grd';
-fname2 = '../run_presA1min_regionB_fg/_grd/fg0003_max.grd';
-outgrdname = 'zratioAB_fg03.grd';
+% fname1 = '../run_presA1min_regionA_fg/_grd/fg0003_max.grd';
+% fname2 = '../run_presA1min_regionB_fg/_grd/fg0003_max.grd';
+% outgrdname = 'zratioAB_fg03.grd';
 % % ---------------------------------
 
 
