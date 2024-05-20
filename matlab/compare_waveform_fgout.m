@@ -1,7 +1,7 @@
 clear
 close all
 
-topogrd = 
+% topogrd = 
 
 matname1 = 'waveform_regionA_fg03.mat';
 matname2 = 'waveform_regionB_fg03.mat';
@@ -37,16 +37,17 @@ xlim(ax(1),[7,13]);
 ylim(ax(1),[-1.1,1.1]);
 % ylim(ax(1),[-0.1,0.1]);
 
-legend(ax(1),[LA,LB,LC],simcase_label,'FontName','Helvetica','FontSize',16,'Location','northwest');
+legend(ax(2),[LA,LB,LC],simcase_label,'FontName','Helvetica','FontSize',16,'Location','northwest');
 
 xlabel(ax(3),'Relative time (hour)','FontName','Helvetica','FontSize',18)
+xlabel(ax(4),'Relative time (hour)','FontName','Helvetica','FontSize',18)
 ylabel(ax(1),'Surface level (m)','FontName','Helvetica','FontSize',18)
 
-ax(1).XTickLabel = '';
-ax(2).XTickLabel = '';
+% ax(1).XTickLabel = '';
+% ax(2).XTickLabel = '';
 
 xlim(ax(1),[8.5,12.5]);
 tile.Padding = 'compact';
 tile.TileSpacing = 'tight';
 
-
+% exportgraphics(fig,'waveform_fgout.png','ContentType','image');
