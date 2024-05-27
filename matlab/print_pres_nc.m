@@ -6,7 +6,9 @@ close all
 %% filename
 % matfile = 'pres_synthetic.mat';
 % matfile = 'pres_lamb.mat';
-% matfile = 'pres_lg_A.mat';
+% matfile = 'pres_lg_A.mat';6
+matfile = 'pres_lg_A_15arcmin.mat';
+% matfile = 'pres_lg_A_30arcmin.mat';
 % matfile = 'pres_lg_B.mat'; 
 % matfile = 'pres_T010min_03waves.mat';
 % matfile = 'pres_T012min_03waves.mat';
@@ -17,7 +19,7 @@ close all
 % matfile = 'pres_T012min_C180_03waves.mat';
 % matfile = 'pres_T012min_C185_03waves.mat';
 % matfile = 'pres_T012min_C190_03waves.mat';
-matfile = 'pres_T012min_C195_03waves.mat';
+% matfile = 'pres_T012min_C195_03waves.mat';
 load(matfile)
 
 %% output

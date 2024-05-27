@@ -20,7 +20,7 @@ lon0 = -175.393311 + 360.0;
 %% lonlat
 latrange = [-60,60];
 lonrange = [110,200.2];
-dl = 0.10;
+dl = 0.25;
 nlon = round(abs(diff(lonrange))/dl)+1;
 nlat = round(abs(diff(latrange))/dl)+1;
 lon = linspace(lonrange(1),lonrange(2),nlon);
