@@ -1,7 +1,7 @@
 clear
 close all
 
-matname = '../run_presA1min_3/_mat/fgout03.mat';
+matname = '../run_presA1min_3/_mat/fgout02.mat';
 load(matname);
 
 
