@@ -3,9 +3,9 @@ using Printf
 using JLD2
 using Plots
 
-simdir = "../run_presA1min_regionA_fg"
+#simdir = "../run_presA1min_regionA_fg"
 #simdir = "../run_presA1min_regionB_fg"
-#simdir = "../run_presA1min_regionC_fg"
+simdir = "../run_presA1min_regionC_fg"
 
 outputdir = joinpath(simdir,"_output")
 jld2dir = joinpath(simdir,"_jld2")
