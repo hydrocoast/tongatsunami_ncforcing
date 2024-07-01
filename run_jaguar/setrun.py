@@ -425,15 +425,15 @@ def setrun(claw_pkg='geoclaw'):
     fgout = fgout_tools.FGoutGrid()
     fgout.fgno = 2
     fgout.output_format = 'ascii'
-    fgout.x1 = 120.0
+    fgout.x1 = 125.0
     fgout.x2 = 140.0
     fgout.y1 = 15.0
-    fgout.y2 = 35.0
+    fgout.y2 = 30.0
     fgout.nx = int( (fgout.x2 - fgout.x1) * 30 )
     fgout.ny = int( (fgout.y2 - fgout.y1) * 30 )
-    fgout.tstart = 3600.0*5.5
-    fgout.tend = 3600.0*13.5
-    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 60 + 1
+    fgout.tstart = 60.0*470.0
+    fgout.tend = 60.0*750.0
+    fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 120 + 1
     fgout_grids.append(fgout)
 
     ## Amami
@@ -447,8 +447,8 @@ def setrun(claw_pkg='geoclaw'):
     fgout.y2 = topo_file.y[-1]
     fgout.nx = topo_file.Z.shape[1]
     fgout.ny = topo_file.Z.shape[0]
-    fgout.tstart = 3600.0*7.0
-    fgout.tend = 3600.0*14.0
+    fgout.tstart = 60.0*590.0
+    fgout.tend = 60.0*720.0
     fgout.nout = int((fgout.tend - fgout.tstart)/3600.0) * 60 + 1
     fgout_grids.append(fgout)
 
