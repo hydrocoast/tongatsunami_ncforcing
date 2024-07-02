@@ -26,10 +26,10 @@ end
 glon = [124.1390,127.6560,129.5370,130.9644,131.4060]
 glat = [ 24.3229, 26.2229, 28.3229, 30.4636, 31.5757]
 
-k = 12
 
 #=
-plt1 = VisClaw.plotsamr2d(amr_surf1.amr[k]; AMRlevel=1:4, c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
+k = 12
+plt1 = VisClaw.plotsamr2d(amr_surf1.amr[k]; c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
 plt1 = plot!(plt1; guidefont=Plots.font("Helvetica",12), tickfont=Plots.font("Helvetica",10))
 plt1 = plot!(plt1; annotations=(122,34,Plots.text("Synthetic","Helvetica",12,:left,:top)))
 plt1 = plot!(plt1; annotations=(122,33,Plots.text(@sprintf("%d min", timelap[k]/60),"Helvetica",12,:left,:top)))
@@ -45,14 +45,18 @@ plt2 = scatter!(plt2, glon, glat, m=:circle, markercolor=:lightgreen, ms=4, lege
 
 function add_gaugepos!(plt, txt)
     #plt = plot!(plt; guidefont=Plots.font("Helvetica",12), tickfont=Plots.font("Helvetica",10), colorbar=:false)
+    plt = plot!(plt; tickfont=Plots.font("Helvetica",10), colorbar=:false)
     #plt = plot!(plt; guide="", ticks=[], colorbar=:false)
-    plt = plot!(plt; colorbar=:false)
+    #plt = plot!(plt; colorbar=:false)
     plt = plot!(plt; annotations=(122,34,Plots.text(txt,"Helvetica",12,:left,:top)))
     plt = scatter!(plt, [132.1447], [20.6267], m=:square, markercolor=:yellow, ms=4, legend=false)
     plt = scatter!(plt, glon, glat, m=:circle, markercolor=:lightgreen, ms=4, legend=false)
     return plt
 end
 
+blank = plot(foreground_color_subplot=:white)
+
+#=
 plt11 = VisClaw.plotsamr2d(amr_surf1.amr[10]; annotations=(122,33,Plots.text(@sprintf("%d min", timelap[10]/60),"Helvetica",12,:left,:top)), c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
 plt12 = VisClaw.plotsamr2d(amr_surf1.amr[12]; annotations=(122,33,Plots.text(@sprintf("%d min", timelap[12]/60),"Helvetica",12,:left,:top)), c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
 plt13 = VisClaw.plotsamr2d(amr_surf1.amr[14]; annotations=(122,33,Plots.text(@sprintf("%d min", timelap[14]/60),"Helvetica",12,:left,:top)), c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
@@ -68,18 +72,23 @@ plt22 = add_gaugepos!(plt22,"JAGUAR")
 plt23 = add_gaugepos!(plt23,"JAGUAR")
 
 
-blank = plot(foreground_color_subplot=:white)
-
 l = @layout [grid(2, 3) a{0.1w}]
 p = plot(plt11, plt12, plt13, plt21, plt22, plt23, blank, layout=l, link=:all, size=(1200,1200))
 p = scatter!(p, [NaN], [NaN], zcolor=[NaN], clims=clims=(-5,5), label="", m=:none, c=:bwr, colorbar_title=Plots.text("cm","Helvetica",10, rotation=90), background_color_subplot=:transparent, markerstrokecolor=:transparent, framestyle=:none, inset=bbox(0.1, 0.0, 0.05, 0.8, :center, :right), subplot=8)
-
-#=
-l = @layout [grid(1, 3) a{0.1w}]
-p2 = plot(plt21, plt22, plt23, blank, layout=l, link=:all)
-p_all = scatter!(p2, [NaN], [NaN], zcolor=[NaN], clims=clims=(-5,5), label="", m=:none, c=:bwr, colorbar_title=Plots.text("cm","Helvetica",10, rotation=90), background_color_subplot=:transparent, markerstrokecolor=:transparent, framestyle=:none, inset=bbox(0.1, 0.0, 0.05, 0.8, :center, :right), subplot=5)
 =#
 
+
+plt1 = VisClaw.plotsamr2d(amr_surf1.amr[14]; c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
+plt2 = VisClaw.plotsamr2d(amr_surf2.amr[7];  c=:bwr, clims=(-0.05, 0.05), colorbar=true, xlims=(120,140), ylims=(15,35))
+plt1 = add_gaugepos!(plt1,"Synthetic")
+plt2 = add_gaugepos!(plt2,"JAGUAR")
+
+l = @layout [grid(1,2) a{0.1w}]
+p = plot(plt1, plt2, blank, layout=l, link=:all, size=(900,400))
+p = scatter!(p, [NaN], [NaN], zcolor=[NaN], clims=clims=(-5,5), label="", m=:none, c=:bwr, colorbar_title=Plots.text("cm","Helvetica",10, rotation=90), background_color_subplot=:transparent, markerstrokecolor=:transparent, framestyle=:none, inset=bbox(0.05, 0.0, 0.1, 0.7, :center, :right), subplot=4)
+
+savefig(p,"surf_synthetic_jaguar.png")
+savefig(p,"surf_synthetic_jaguar.pdf")
 
 
 #=
