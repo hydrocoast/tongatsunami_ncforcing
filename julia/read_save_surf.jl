@@ -3,8 +3,8 @@ using Printf
 using JLD2
 using Plots
 
-#simdir = "../run_presA1min_regionA_fg"
-simdir = "../run_jaguar"
+simdir = "../run_presA1min_regionA_fg"
+#simdir = "../run_jaguar"
 
 outputdir = joinpath(simdir,"_output")
 jld2dir = joinpath(simdir,"_jld2")
@@ -15,7 +15,7 @@ flist = filter(x->occursin("fort.t0",x), readdir(outputdir))
 timelap = VisClaw.loadfortt.(joinpath.(outputdir,flist[ind_time]))
 
 print("reading sea surface level ...     ")
-amr_surf = loadsurface(outputdir, ind_time; AMRlevel=1:4, xlims=(120,135), ylims=(10,35))
+amr_surf = loadsurface(outputdir, ind_time; AMRlevel=1:4, xlims=(120,140), ylims=(10,35))
 print("end\n")
 
 print("saving sea surface level ...     ")
