@@ -12,9 +12,11 @@ file2 = 'gebco_2022_medfilt2.nc';
 [lon,lat,org] = grdread2(fullfile(topodir,file1));
 
 
-filtered1 = medfilt2(org,[50,50]);
-filtered2 = medfilt2(filtered1,[50,50]);
-% filtered1 = medfilt2(org,[100,100]);
+% filtered1 = medfilt2(org,[50,50]);
+% filtered2 = medfilt2(filtered1,[50,50]);
+% filtered3 = medfilt2(filtered2,[50,50]);
+filtered1 = medfilt2(org,[100,100]);
+filtered2 = medfilt2(filtered1,[100,100]);
 
 
 % grdwrite2(lon,lat,filtered1, fullfile(topodir,file2));

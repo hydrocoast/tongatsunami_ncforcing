@@ -6,7 +6,7 @@ bwr = createcolormap([0,0,1;1,1,1;1,0,0]);
 %% file
 topodir = '../bathtopo';
 file1 = 'gebco_2022_cut.nc';
-file2 = 'gebco_2022_medfilt.nc';
+file2 = 'gebco_2022_medfilt2.nc';
 
 [lon,lat,org] = grdread2(fullfile(topodir,file1));
 [~,~,new] = grdread2(fullfile(topodir,file2));
@@ -23,13 +23,10 @@ demcmap([-7000,3000]);
 colorbar(ax1);
 
 
+%% contourline
 S = contourdata(C);
 
 [~,ind] = maxk([S.numel]',3);
-
-% for i = 1:2
-%     plot(S(ind(i)).xdata, S(ind(i)).ydata, 'm-', 'LineWidth',2);
-% end
 plot(S(ind(1)).xdata, S(ind(1)).ydata, 'm-', 'LineWidth',2);
 plot(S(ind(2)).xdata, S(ind(2)).ydata, 'y-', 'LineWidth',2);
 plot(S(ind(3)).xdata, S(ind(3)).ydata, 'g-', 'LineWidth',2);
@@ -47,12 +44,15 @@ i1b = 12400:14150;
 i3 = n3:-1:4400;
 i1c = 29800:n1;
 
-xcat = vertcat(max(lon),x1(i1a),x1(i1b),x3(i3),x1(i1c));
-ycat = vertcat(min(lat),y1(i1a),y1(i1b),y3(i3),y1(i1c));
+xcat = vertcat(max(lon),x1(i1a),x3(i3),x1(i1b),x1(i1c));
+ycat = vertcat(min(lat),y1(i1a),y3(i3),y1(i1b),y1(i1c));
+xcat = downsample(xcat,200);
+ycat = downsample(ycat,200);
+
 plot(xcat,ycat,'r-',LineWidth=2);
 
 
-
+%% set applied region
 lat_above = 16;
 lon_below = 138;
 
@@ -61,12 +61,14 @@ TFlon = LON<lon_below;
 TFlat = LAT>lat_above;
 
 in = inpolygon(LON(:),LAT(:),xcat,ycat);
+TFin = reshape(in,[length(lat),length(lon)]);
+TFapp = TFin & TFlon & TFlat;
 
-TFapp = in & TFlon & TFlat;
-
+%% apply
 new_filt = org;
 new_filt(TFapp) = new(TFapp);
 
+%% check filtered topo
 ax2 = nexttile;
 pcolor(lon,lat,new_filt-org); shading flat
 axis equal tight
@@ -76,5 +78,5 @@ colorbar(ax2);
 grid on
 box on
 
-
-
+%% output
+grdwrite2(lon,lat,new_filt, fullfile(topodir,'gebco_2022_filtered.nc'));
