@@ -6,8 +6,14 @@ file_org   = '../bathtopo/gebco_2022_n60.0_s-60.0_w110.0_e240.0.nc';
 % file_patch = '../bathtopo/gebco_2022_flat_above5000m.nc';
 % file_out   = '../bathtopo/gebco_2022_flat_above5000m_all.nc';
 % --------------------
-file_patch = '../bathtopo/gebco_2022_flat_above5500m.nc';
-file_out   = '../bathtopo/gebco_2022_flat_above5500m_all.nc';
+% file_patch = '../bathtopo/gebco_2022_flat_above5500m.nc';
+% file_out   = '../bathtopo/gebco_2022_flat_above5500m_all.nc';
+% --------------------
+% file_patch = '../bathtopo/gebco_2022_flat_above6000m.nc';
+% file_out   = '../bathtopo/gebco_2022_flat_above6000m_all.nc';
+% --------------------
+file_patch = '../bathtopo/gebco_2022_flat_kikai.nc';
+file_out   = '../bathtopo/gebco_2022_flat_kikai_all.nc';
 % --------------------
 
 [lon0,lat0,topo0] = grdread2(file_org);

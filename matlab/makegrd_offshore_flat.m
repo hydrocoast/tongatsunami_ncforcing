@@ -10,7 +10,7 @@ file1 = 'gebco_2022_cut.nc';
 
 [lon,lat,org] = grdread2(fullfile(topodir,file1));
 
-depth_thresh = -5500;
+depth_thresh = -6000;
 TFshallow = depth_thresh < org;
 
 file_out = fullfile(topodir,sprintf('gebco_2022_flat_above%04dm.nc',-depth_thresh));
