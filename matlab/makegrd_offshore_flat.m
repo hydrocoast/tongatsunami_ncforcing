@@ -13,9 +13,9 @@ file1 = 'gebco_2022_cut.nc';
 depth_thresh = -5700;
 TFshallow = depth_thresh < org;
 
-file_out = fullfile(topodir,sprintf('gebco_2022_flat_above%04dm.nc',-depth_thresh));
+% file_out = fullfile(topodir,sprintf('gebco_2022_flat_above%04dm.nc',-depth_thresh));
 % file_out = fullfile(topodir,'gebco_2022_flat_amamiplateau.nc');
-% file_out = fullfile(topodir,'gebco_2022_flat_daitoridges.nc');
+file_out = fullfile(topodir,'gebco_2022_flat_daitoridges.nc');
 
 
 fig = figure("Position",[200,500,1000,375]);
@@ -27,7 +27,7 @@ ax1 = nexttile;
 % colorbar(ax1);
 
 pcolor(lon,lat,org); shading flat; hold on
-% [C,l] = contour(lon,lat,org,-8000:2000:-2000,'w-');
+[C,l] = contour(lon,lat,org,-8000:2000:-2000,'w-');
 % [C,l] = contour(lon,lat,org,-5700:500:-4200,'w-');
 % [C,l] = contour(lon,lat,org,[-5700,-5000],'w-'); % only daito ridges
 axis equal tight
@@ -64,32 +64,37 @@ plot(x3(1),y3(1),'go');
 % --------------------------------
 
 % --------------------------------
-% %% mask amami plateau
-% i1a = 12400:15500;
-% i1b = 18200:23000;
-% i3 = 4400;
-% 
-% xcat = vertcat(x3(i3),x1(i1a),x1(i1b));
-% ycat = vertcat(y3(i3),y1(i1a),y1(i1b));
-% xcat = downsample(xcat,100);
-% ycat = downsample(ycat,100);
-% --------------------------------
+%% mask amami plateau
+i1a = 12400:15500;
+i1b = 18200:23000;
+i3 = 4400;
 
-% --------------------------------
-%% mask daito ridges
-i1a = 21700:24400;
-i3 = 11300:14000;
-i2 = 14500:15000;
-i1b = 28000:33700;
-
-xcat = vertcat(x1(i1a),x3(i3),x2(i2),x1(i1b));
-ycat = vertcat(y1(i1a),y3(i3),y2(i2),y1(i1b));
+xcat = vertcat(x3(i3),x1(i1a),x1(i1b));
+ycat = vertcat(y3(i3),y1(i1a),y1(i1b));
 xcat = downsample(xcat,100);
 ycat = downsample(ycat,100);
 % --------------------------------
 
+% --------------------------------
+% %% mask daito ridges
+% i1a = 21700:24400;
+% i3 = 11300:14000;
+% i2 = 14500:15000;
+% i1b = 28000:33700;
+% 
+% xcat = vertcat(x1(i1a),x3(i3),x2(i2),x1(i1b));
+% ycat = vertcat(y1(i1a),y3(i3),y2(i2),y1(i1b));
+% xcat = downsample(xcat,100);
+% ycat = downsample(ycat,100);
+% --------------------------------
+
 
 plot(xcat,ycat,'r-',LineWidth=2);
+
+fid = fopen('maskline.dat','w');
+fprintf(fid,'%15.10f %15.10f\n',[xcat,ycat]');
+fclose(fid);
+
 
 % S1 = S(ind(1));
 % S2 = S(ind(2));
@@ -129,6 +134,6 @@ tile.Padding = 'compact';
 
 
 %% output
-grdwrite2(lon,lat,new, file_out);
+% grdwrite2(lon,lat,new, file_out);
 
 
